@@ -1,0 +1,59 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    background-color: white;
+    padding: 24px;
+    border: 3px solid black;
+    border-radius: 10px;
+}
+
+.form .title {
+    margin: 0 0 24px 0;
+}
+
+.form .content {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.form .element {
+    display: flex;
+    flex-direction: column;
+}
+
+.form input {
+    font-size: 1.2rem;
+}
+
+.form button {
+    color: white;
+    background-color: black;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 8px;
+}
+
+.form button:hover {
+    background-color: grey;
+}
+
+.form .footer {
+    display:flex;
+    justify-content: center;
+    gap: 12px;
+    font-size: 12px;
+}
+
+.form .footer a {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* Signup extra classes */
+
+.password-validation-msg {
+    text-align: right;
+    font-size: 12px;
+}

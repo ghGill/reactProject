@@ -1,0 +1,407 @@
+.overview-page {
+    display: flex;
+    flex-direction: column;
+    row-gap: 12px;
+    padding: 12px 12px 12px 12px;
+    height:100%;
+}
+
+.overview-page > .header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 5%;
+}
+
+.overview-page > .header > .title {
+    font-size: 2em;
+    font-weight: bolder;
+}
+
+.section {
+    background-color: white;
+    border-radius: 15px;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+.overview-page > .cards {
+    display: flex;
+    justify-content: space-between;
+    height:20%;
+}
+
+.overview-page > .cards > .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width:30%;
+    height:100%;
+}
+
+.overview-page > .cards > .card.active {
+    background-color: black;
+    color: white;    
+}
+
+.overview-page > .cards > .card > .amount {
+    font-size: 1.5em;
+    font-weight: bolder;
+}
+
+.overview-page > .content {
+    width:100%;
+    height:100%;
+    display: flex;
+    gap: 12px;
+}
+
+.overview-page > .content > .left {
+    width:70%;
+    height:100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.overview-page > .content > .right {
+    width:30%;
+    height:100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.overview-page > .content > .left > .pots {
+    height: 25%;
+}
+
+.overview-page > .content > .left > .pots > .header {
+    display: flex;
+    justify-content: space-between;
+    place-items: center;
+    height:35%;
+}
+
+.overview-page > .content > .left > .pots > .header > .title {
+    font-weight: bolder;
+    font-size: 1.2em;
+}
+
+.overview-page > .content > .left > .pots > .header > .see-details {
+    font-size: 0.8em;
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.overview-page > .content > .left > .pots > .header > .see-details:hover {
+    opacity: 1;
+}
+
+.overview-page > .content > .left > .pots > .data {
+    height:65%;
+    display: flex;
+}
+
+.overview-page > .content > .left > .pots > .data > .total-saved {
+    display: flex;
+    width:40%;
+    height: 100%;
+    border-radius: 10px;
+    background-color: rgb(182, 150, 90);
+    justify-content: space-around;
+}
+
+.overview-page > .content > .left > .pots > .data > .total-saved > .icon {
+    font-size: xxx-large;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.overview-page > .content > .left > .pots > .data > .total-saved > .info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.overview-page > .content > .left > .pots > .data > .total-saved > .info > .value {
+    font-size: x-large;
+    font-weight: bolder;
+}
+
+.overview-page > .content > .left > .pots > .data > .info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width:60%;
+    row-gap: 8px;;
+}
+
+.overview-page > .content > .left > .pots > .data > .info > .pots-card {
+    display: flex;
+    font-size: 12px;
+    width:45%;
+    height:45%;
+    gap: 12px;
+}
+
+.overview-page > .content > .left > .pots > .data > .info > .pots-card > .color {
+    width: 5px;
+    height:100%;
+}
+
+.overview-page > .content > .left > .pots > .data > .info > .pots-card > .info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 4px;
+}
+
+.overview-page > .content > .left > .pots > .data > .info > .pots-card > .info > .caption {
+    line-height: 1;
+}
+
+.overview-page > .content > .left > .pots > .data > .info > .pots-card > .info > .amount {
+    font-weight: bolder;
+    font-size: 1.2em;
+}
+
+.color1 {
+    background-color: #277C78;
+}
+
+.color2 {
+    background-color: #82C9D7;
+}
+
+.color3 {
+    background-color: #626070;
+}
+
+.color4 {
+    background-color: #F2CDAC;
+}
+
+.overview-page > .content > .left > .transactions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height:75%;
+}
+
+.overview-page > .content > .left > .transactions > .header {
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+    height:10%;
+}
+
+.overview-page > .content > .left > .transactions > .header > .title {
+    font-weight: bolder;
+    font-size: 1.2em;
+}
+
+.overview-page > .content > .left > .transactions > .header > .viewall {
+    font-size: 0.8em;
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.overview-page > .content > .left > .transactions > .header > .viewall:hover {
+    opacity:1;
+}
+
+.overview-page > .content > .left > .transactions > .users-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height:90%;
+    justify-content: space-around;
+}
+
+.overview-page > .content > .left > .transactions > .users-list > .transaction-user {
+    display: flex;
+    place-items: center;
+    justify-content: space-between;
+    height:20%;
+}
+
+.overview-page > .content > .left > .transactions > .users-list > .transaction-user > .left {
+    display: flex;
+    place-items: center;
+    gap: 24px;
+}
+
+.overview-page > .content > .left > .transactions > .users-list > .transaction-user > .left > img {
+    border-radius: 50%;
+    border: 2px solid black;
+    box-sizing: border-box;
+    width: 20%;
+}
+
+.overview-page > .content > .left > .transactions > .users-list > .transaction-user > .left > .user-name {
+    font-weight: bolder;
+}
+
+.overview-page > .content > .left > .transactions > .users-list > .transaction-user > .right > .amount {
+    font-weight: bolder;
+}
+
+.amount-plus-color {
+    color: #277C78;
+}
+
+.amount-minus-color {
+    color: black;
+}
+
+.overview-page > .content > .left > .transactions > .users-list > .transaction-user > .right > .date {
+    font-size: 0.8em;
+}
+
+.overview-page > .content > .right > .budgets {
+    height: 50%;
+}
+
+.overview-page > .content > .right > .budgets > .header {
+    display: flex;
+    justify-content: space-between;
+    place-items: center;
+    height:20%;
+}
+
+.overview-page > .content > .right > .budgets > .header > .title {
+    font-weight: bolder;
+    font-size: 1.2em;
+}
+
+.overview-page > .content > .right > .budgets > .header > .see-details {
+    font-size: 0.8em;
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.overview-page > .content > .right > .budgets > .header > .see-details:hover {
+    opacity: 1;
+}
+
+.overview-page > .content > .right > .budgets > .data {
+    display: flex;
+    gap: 12px;
+    height: 80%;
+}
+
+.overview-page > .content > .right > .budgets > .data > .chart {
+    display: flex;
+    align-items: center;
+}
+
+.overview-page > .content > .right > .budgets > .data > .chart > img {
+    width:90%;
+}
+
+.overview-page > .content > .right > .budgets > .data > .chart > .info {
+    position: absolute;
+    text-align: center;
+    width: 13%;
+
+}
+
+.overview-page > .content > .right > .budgets > .data > .chart > .info > .amount {
+    font-weight: bolder;
+}
+
+.overview-page > .content > .right > .budgets > .data > .info {
+    display: flex;
+    flex-direction: column;
+    width:60%;
+    gap: 12px;
+}
+
+.overview-page > .content > .right > .budgets > .data > .info > .budget-card {
+    display: flex;
+    height:20%;
+    gap: 12px;
+}
+
+.overview-page > .content > .right > .budgets > .data > .info > .budget-card > .color {
+    width: 5px;
+    height: 100%;
+}
+
+.overview-page > .content > .right > .budgets > .data > .info > .budget-card > .details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.overview-page > .content > .right > .budgets > .data > .info > .budget-card > .details > .title {
+    font-size: 0.8em;
+}
+
+.overview-page > .content > .right > .budgets > .data > .info > .budget-card > .details > .amount {
+   font-weight: bolder;
+}
+
+.overview-page > .content > .right > .bills {
+    height: 50%;
+}
+
+.overview-page > .content > .right > .bills > .header {
+    display: flex;
+    justify-content: space-between;
+    place-items: center;
+    height:15%;
+}
+
+.overview-page > .content > .right > .bills > .header > .title {
+    font-weight: bolder;
+    font-size: 1.2em;
+}
+
+.overview-page > .content > .right > .bills > .header > .see-details {
+    font-size: 0.8em;
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.overview-page > .content > .right > .bills > .header > .see-details:hover {
+    opacity: 1;
+}
+
+.overview-page > .content > .right > .bills > .cards {
+    display: flex;
+    flex-direction: column;
+    width:100%;
+    height:85%;
+    gap: 12px;
+}
+
+.overview-page > .content > .right > .bills > .cards > .bills-card {
+    width: 100%;
+    height:33%;
+    background-color: rgb(223, 217, 210);
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    box-sizing: border-box;
+}
+
+.overview-page > .content > .right > .bills > .cards > .bills-card > .amount {
+    font-weight: bolder;
+}
+
+.overview-page > .content > .right > .bills > .cards > .bills-card.color1 {
+    border-left: 5px solid #277C78;
+}
+
+.overview-page > .content > .right > .bills > .cards > .bills-card.color2 {
+    border-left: 5px solid #F2CDAC;
+}
+
+.overview-page > .content > .right > .bills > .cards > .bills-card.color3 {
+    border-left: 5px solid #82C9D7 !important;
+}
