@@ -1,14 +1,16 @@
 import './Sidebar.css'
 import { useState, useEffect } from 'react'
 import { pagesInfoData, getDefaultPageData } from '../pages/pagesInfo.jsx'
+import { useLocation } from 'wouter'
 
-function Sidebar({ changePageHandler, pageId = null }) {
+function Sidebar({ pageId = null }) {
     const [activeMenu, setActiveMenu] = useState(pageId ? pageId : getDefaultPageData("id"));
     const [sidebarState, setSidebarState] = useState("open");
+    const [, navigate] = useLocation();
 
     function sidebarItemClick(pageId) {
         setActiveMenu(pageId);
-        changePageHandler(pageId);
+        navigate(`/${pageId}`);
     }
 
     function toggleSidebar() {

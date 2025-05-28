@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { Children, useEffect, useState } from 'react'
 import './Overview.css'
 import chart from '../assets/budgets-chart.png'
+import {Route, Link} from 'wouter'
 
 function Overview({ changePageHandler }) {
     const [users, setUsers] = useState([]);
@@ -21,7 +22,7 @@ function Overview({ changePageHandler }) {
 
     function Card({ active, title, amount }) {
         return (
-            <div className={`section card ${active === "true" ? "active" : ""}`}>
+            <div className={`card ${active === "true" ? "active" : ""}`}>
                 <div>{title}</div>
                 <div className='amount'>{amount}</div>
             </div>
@@ -30,9 +31,9 @@ function Overview({ changePageHandler }) {
 
     function PotsCard({title, amount, colorClass}) {
         return (
-            <div className='pots-card'>
+            <div className='ticket'>
                 <div className={`color ${colorClass}`}></div>
-                <div className='info'>
+                <div className='details'>
                     <div className='caption'>{title}</div>
                     <div className='amount'>{amount}</div>
                 </div>
@@ -59,7 +60,7 @@ function Overview({ changePageHandler }) {
 
     function BudgetCard({title, amount, color}) {
         return (
-            <div className='budget-card'>
+            <div className='ticket'>
                 <div className={`color ${color}`}>
                 </div>
                 <div className='details'>
@@ -72,9 +73,22 @@ function Overview({ changePageHandler }) {
 
     function BillsCard({title, amount, color}) {
         return (
-            <div className={`bills-card ${color}`}>
+            <div className={`info-card ${color}`}>
                 <div>{title}</div>
                 <div className='amount'>{amount}</div>
+            </div>
+        )
+    }
+
+    function OverviewCard({ id, w, h, title, linkText, route, children }) {
+        return (
+            <div className={`${id} overview-card`} style={{ width: w, height: h }}>
+                <div className='header'>
+                    <div className="title">{title}</div>
+                    <Link href={route} className="route">{linkText}<i className="fa fa-play"></i></Link>
+                </div>
+
+                {children}
             </div>
         )
     }
@@ -82,11 +96,11 @@ function Overview({ changePageHandler }) {
     return (
         <>
             <div className='overview-page'>
-                <div className='header'>
+                <div className='page-header'>
                     <div className="title">Overview</div>
                 </div>
                 
-                <div className="cards">
+                <div className="top-cards">
                     <Card active="true" title="Current Balance" amount="$4,836.60" />
                     <Card active="false"  title="Income" amount="$3,814.25"/>
                     <Card active = "false"  title="Expenses" amount="$1,700.50" />
@@ -94,12 +108,7 @@ function Overview({ changePageHandler }) {
 
                 <div className='content'>
                     <div className='left'>
-                        <div className='section pots'>
-                            <div className='header'>
-                                <div className="title">Pots</div>
-                                <div onClick={() => {changePageHandler('pots')}} className="see-details">See Details <i className="fa fa-play"></i></div>
-                            </div>
-
+                        <OverviewCard id='pots' w='100%' h='25%' title='Pots' linkText='See Details' route='/pots' >
                             <div className='data'>
                                 <div className="total-saved">
                                     <div className='icon'>
@@ -118,14 +127,9 @@ function Overview({ changePageHandler }) {
                                     <PotsCard title='New Laptop' amount='$10' colorClass='color4' />
                                 </div>
                             </div>
-                        </div>
+                        </OverviewCard>
 
-                        <div className='section transactions'>
-                            <div className='header'>
-                                <div className="title">Transactions</div>
-                                <div onClick={() => {changePageHandler('transactions')}} className="viewall">View All <i className="fa fa-play"></i></div>
-                            </div>
-
+                        <OverviewCard id='transactions' w='100%' h='75%' title='Transactions' linkText='View All' route='/transactions' >
                             <div className='users-list'>
                                 {
                                     users.map((user) => {
@@ -133,15 +137,11 @@ function Overview({ changePageHandler }) {
                                     })
                                 }
                             </div>
-                        </div>
+                        </OverviewCard>
                     </div>
 
                     <div className="right">
-                        <div className='section budgets'>
-                            <div className='header'>
-                                <div className="title">Budgets</div>
-                                <div onClick={() => {changePageHandler('budgets')}} className="see-details">See Details <i className="fa fa-play"></i></div>
-                            </div>
+                        <OverviewCard id='budgets' w='100%' h='50%' title='Budgets' linkText='See Details' route='/budgets' >
                             <div className='data'>
                                 <div className="chart">
                                     <img src={chart}></img>
@@ -157,20 +157,15 @@ function Overview({ changePageHandler }) {
                                     <BudgetCard title='Personal Care' amount='$100.00' color='color4' />
                                 </div>
                             </div>
-                        </div>
+                        </OverviewCard>
 
-                        <div className='section bills'>
-                            <div className='header'>
-                                <div className="title">Recurring Bills</div>
-                                <div onClick={() => {changePageHandler('recurring-bills')}} className="see-details">See Details <i className="fa fa-play"></i></div>
-                            </div>
-
+                        <OverviewCard id='bills' w='100%' h='50%' title='Recurring Bills' linkText='See Details' route='/recurring-bills' >
                             <div className='cards'>
                                 <BillsCard title='Paid Bills' amount='$190.00' color='color1' />
                                 <BillsCard title='Total Upcoming' amount='$194.98' color='color2' />
                                 <BillsCard title='Due Soon' amount='$59.98' color='color3' />
                             </div>
-                        </div>
+                        </OverviewCard>
                     </div>
                 </div>
             </div>

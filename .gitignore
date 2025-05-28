@@ -1,5 +1,7 @@
 # Logs
 db
+dist
+dist.zip
 logs
 *.log
 npm-debug.log*

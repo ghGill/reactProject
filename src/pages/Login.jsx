@@ -1,7 +1,10 @@
 import './Login.css'
 import { pagesInfoData, getPageDataById } from './pagesInfo'
+import { useLocation, Link } from 'wouter'
 
 function Login({ changePageHandler }) {
+    const [, navigate] = useLocation();
+
     return (
       <form className="form">
         <h1 className="title">Login</h1>
@@ -18,7 +21,7 @@ function Login({ changePageHandler }) {
             </div>
 
             <div className="element">
-                <button onClick={() => { changePageHandler("overview")}} type="button">Login</button>
+                <button onClick={() => navigate("/overview")} type="button">Login</button>
             </div>
 
             <div className="footer">
@@ -26,7 +29,7 @@ function Login({ changePageHandler }) {
                     Need to create an acount?
                 </div>
                 <div>
-                    <b><a onClick={() => {changePageHandler("signup")}} >Sign Up</a></b>
+                    <b><Link href="/signup" >Sign Up</Link></b>
                 </div>
             </div>
         </div>

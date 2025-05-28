@@ -2,9 +2,11 @@ import './Login.css'
 import { pagesInfoData, getPageDataById } from './pagesInfo'
 import { createCookie } from '../utils/cookies.jsx'
 import { useState } from 'react';
+import { useLocation, Link } from 'wouter'
 
-function Signup({ changePageHandler }) {
+function Signup() {
     const [form, setForm] = useState({username:"", email:"", password:""});
+    const [, navigate] = useLocation();
 
     function inputOnChange(event) {
         const { name, value } = event.target;
@@ -17,7 +19,7 @@ function Signup({ changePageHandler }) {
 
         createCookie("username", form.username);
 
-        changePageHandler("login");
+        navigate("/login");
     }
 
     return (
@@ -50,7 +52,7 @@ function Signup({ changePageHandler }) {
                     Already have an account?
                 </div>
                 <div>
-                    <b><a onClick={ () => {changePageHandler("login")} } >Login</a></b>
+                    <b><Link href="/login" >Login</Link></b>
                 </div>
             </div>
         </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect} from "react";
 import './Page.css'
 import { getDefaultPageData, getPageDataById } from "./pagesInfo";
 import Logo from "../components/Logo";
@@ -24,12 +24,11 @@ function Page({ page = null }) {
         // };
     }, [height]);
 
-    function changePage(pageId) {
-        setPageData(getPageDataById(pageId));
-    }
+    function pageContent() {
+        const pagePath = window.location.pathname.slice(1);  // remove the '/' from the begining of the route
+        const PageData = pagePath ? getPageDataById(pagePath) : getDefaultPageData();
 
-    function pageTemplate(type) {
-        switch (type) {
+        switch (PageData.type) {
             case "logo":
                 return (
                     <div className="page">
@@ -38,7 +37,7 @@ function Page({ page = null }) {
                         </div>
 
                         <div className="logo-form-area">
-                            <PageData.component changePageHandler={changePage} />
+                            <PageData.component />
                         </div>
                     </div>
                 );
@@ -46,10 +45,10 @@ function Page({ page = null }) {
             case "sidebar":
                 return (
                     <div className="page">
-                        <Sidebar pageId={PageData.id} changePageHandler={changePage} />
+                        <Sidebar pageId={PageData.id} />
 
                         <div className="sidebar-page-area">
-                            <PageData.component changePageHandler={changePage} />
+                            <PageData.component />
                         </div>
                     </div>
                 );
@@ -57,8 +56,8 @@ function Page({ page = null }) {
     }
 
     return (
-        <div  style={{ height: `${height}px` }}>
-            {pageTemplate(PageData.type)}
+        <div style={{ height: `${height}px` }}>
+            {pageContent()}
         </div>
     );
 }

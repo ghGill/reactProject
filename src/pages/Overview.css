@@ -2,56 +2,55 @@
     display: flex;
     flex-direction: column;
     row-gap: 12px;
-    padding: 12px 12px 12px 12px;
+    padding: 0 12px;
     height:100%;
 }
 
-.overview-page > .header {
+.overview-page .page-header {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     height: 5%;
 }
 
-.overview-page > .header > .title {
+.overview-page .page-header .title {
     font-size: 2em;
     font-weight: bolder;
 }
 
-.section {
+/* =========== TOP CARDS ============================== */
+
+.overview-page .top-cards {
+    display: flex;
+    justify-content: space-between;
+    height:15%;
+}
+
+.overview-page .top-cards .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width:30%;
+    height:100%;
+
     background-color: white;
     border-radius: 15px;
     padding: 12px;
     box-sizing: border-box;
 }
 
-.overview-page > .cards {
-    display: flex;
-    justify-content: space-between;
-    height:20%;
-}
-
-.overview-page > .cards > .card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    width:30%;
-    height:100%;
-}
-
-.overview-page > .cards > .card.active {
+.overview-page .top-cards .card.active {
     background-color: black;
     color: white;    
 }
 
-.overview-page > .cards > .card > .amount {
+.overview-page .top-cards .card .amount {
     font-size: 1.5em;
     font-weight: bolder;
 }
 
 .overview-page > .content {
     width:100%;
-    height:100%;
+    height:75%;
     display: flex;
     gap: 12px;
 }
@@ -72,38 +71,52 @@
     gap: 12px;
 }
 
-.overview-page > .content > .left > .pots {
-    height: 25%;
+/* =========== OVERVIEW CARD ============================== */
+
+.overview-card {
+    background-color: white;
+    border-radius: 15px;
+    padding: 12px;
+    box-sizing: border-box;
+    box-shadow: 4px 4px 10px black;
 }
 
-.overview-page > .content > .left > .pots > .header {
+.overview-card > .header {
     display: flex;
     justify-content: space-between;
     place-items: center;
-    height:35%;
+    height:15%;
+    padding-bottom: 1%;
 }
 
-.overview-page > .content > .left > .pots > .header > .title {
+.overview-card > .header > .title {
     font-weight: bolder;
     font-size: 1.2em;
 }
 
-.overview-page > .content > .left > .pots > .header > .see-details {
+.overview-card > .header > .route {
     font-size: 0.8em;
-    cursor: pointer;
-    opacity: 0.7;
+    opacity: 0.5;
+    text-decoration: none;
+    color: black;
 }
 
-.overview-page > .content > .left > .pots > .header > .see-details:hover {
+.overview-card > .header > .route:hover {
     opacity: 1;
 }
 
-.overview-page > .content > .left > .pots > .data {
+.overview-card > .header > .route i {
+    padding-left: 12px;
+}
+
+/* **************** POTS ********************************** */
+
+.pots.overview-card .data {
     height:65%;
     display: flex;
 }
 
-.overview-page > .content > .left > .pots > .data > .total-saved {
+.pots.overview-card .data .total-saved {
     display: flex;
     width:40%;
     height: 100%;
@@ -112,25 +125,25 @@
     justify-content: space-around;
 }
 
-.overview-page > .content > .left > .pots > .data > .total-saved > .icon {
+.pots.overview-card .data .total-saved .icon {
     font-size: xxx-large;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
-.overview-page > .content > .left > .pots > .data > .total-saved > .info {
+.pots.overview-card .data .total-saved .info {
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
-.overview-page > .content > .left > .pots > .data > .total-saved > .info > .value {
+.pots.overview-card .data .total-saved .info .value {
     font-size: x-large;
     font-weight: bolder;
 }
 
-.overview-page > .content > .left > .pots > .data > .info {
+.pots.overview-card .data .info {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -138,7 +151,7 @@
     row-gap: 8px;;
 }
 
-.overview-page > .content > .left > .pots > .data > .info > .pots-card {
+.pots.overview-card .data .info .ticket {
     display: flex;
     font-size: 12px;
     width:45%;
@@ -146,23 +159,23 @@
     gap: 12px;
 }
 
-.overview-page > .content > .left > .pots > .data > .info > .pots-card > .color {
+.pots.overview-card .data .info .ticket .color {
     width: 5px;
     height:100%;
 }
 
-.overview-page > .content > .left > .pots > .data > .info > .pots-card > .info {
+.pots.overview-card .data .info .ticket .details {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     gap: 4px;
 }
 
-.overview-page > .content > .left > .pots > .data > .info > .pots-card > .info > .caption {
+.pots.overview-card .data .info .ticket .details .caption {
     line-height: 1;
 }
 
-.overview-page > .content > .left > .pots > .data > .info > .pots-card > .info > .amount {
+.pots.overview-card .data .info .ticket .details .amount {
     font-weight: bolder;
     font-size: 1.2em;
 }
@@ -183,68 +196,41 @@
     background-color: #F2CDAC;
 }
 
-.overview-page > .content > .left > .transactions {
+/* **************** TRANSACTIONS ********************************** */
+
+.transactions.overview-card .users-list {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    height:75%;
-}
-
-.overview-page > .content > .left > .transactions > .header {
-    justify-content: space-between;
-    display: flex;
-    align-items: center;
-    height:10%;
-}
-
-.overview-page > .content > .left > .transactions > .header > .title {
-    font-weight: bolder;
-    font-size: 1.2em;
-}
-
-.overview-page > .content > .left > .transactions > .header > .viewall {
-    font-size: 0.8em;
-    cursor: pointer;
-    opacity: 0.7;
-}
-
-.overview-page > .content > .left > .transactions > .header > .viewall:hover {
-    opacity:1;
-}
-
-.overview-page > .content > .left > .transactions > .users-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    height:90%;
+    height:85%;
     justify-content: space-around;
 }
 
-.overview-page > .content > .left > .transactions > .users-list > .transaction-user {
+.transactions.overview-card .users-list .transaction-user {
     display: flex;
     place-items: center;
     justify-content: space-between;
     height:20%;
 }
 
-.overview-page > .content > .left > .transactions > .users-list > .transaction-user > .left {
+.transactions.overview-card .users-list .transaction-user .left {
     display: flex;
     place-items: center;
     gap: 24px;
 }
 
-.overview-page > .content > .left > .transactions > .users-list > .transaction-user > .left > img {
+.transactions.overview-card .users-list .transaction-user .left img {
     border-radius: 50%;
     border: 2px solid black;
     box-sizing: border-box;
-    width: 20%;
+    width: 15%;
 }
 
-.overview-page > .content > .left > .transactions > .users-list > .transaction-user > .left > .user-name {
+.transactions.overview-card .users-list .transaction-user .left .user-name {
     font-weight: bolder;
 }
 
-.overview-page > .content > .left > .transactions > .users-list > .transaction-user > .right > .amount {
+.transactions.overview-card .users-list .transaction-user .right .amount {
     font-weight: bolder;
 }
 
@@ -256,121 +242,73 @@
     color: black;
 }
 
-.overview-page > .content > .left > .transactions > .users-list > .transaction-user > .right > .date {
+.transactions.overview-card .users-list .transaction-user .right .date {
     font-size: 0.8em;
 }
 
-.overview-page > .content > .right > .budgets {
-    height: 50%;
-}
+/* **************** BUDGETS ********************************** */
 
-.overview-page > .content > .right > .budgets > .header {
-    display: flex;
-    justify-content: space-between;
-    place-items: center;
-    height:20%;
-}
-
-.overview-page > .content > .right > .budgets > .header > .title {
-    font-weight: bolder;
-    font-size: 1.2em;
-}
-
-.overview-page > .content > .right > .budgets > .header > .see-details {
-    font-size: 0.8em;
-    cursor: pointer;
-    opacity: 0.7;
-}
-
-.overview-page > .content > .right > .budgets > .header > .see-details:hover {
-    opacity: 1;
-}
-
-.overview-page > .content > .right > .budgets > .data {
+.budgets.overview-card .data {
     display: flex;
     gap: 12px;
     height: 80%;
 }
 
-.overview-page > .content > .right > .budgets > .data > .chart {
+.budgets.overview-card .data .chart {
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
-.overview-page > .content > .right > .budgets > .data > .chart > img {
+.budgets.overview-card .data .chart img {
     width:90%;
 }
 
-.overview-page > .content > .right > .budgets > .data > .chart > .info {
+.budgets.overview-card .data .chart .info {
     position: absolute;
     text-align: center;
     width: 13%;
-
 }
 
-.overview-page > .content > .right > .budgets > .data > .chart > .info > .amount {
+.budgets.overview-card .data .chart .info .amount {
     font-weight: bolder;
 }
 
-.overview-page > .content > .right > .budgets > .data > .info {
+.budgets.overview-card .data .info {
     display: flex;
     flex-direction: column;
     width:60%;
     gap: 12px;
 }
 
-.overview-page > .content > .right > .budgets > .data > .info > .budget-card {
+.budgets.overview-card .data .info .ticket {
     display: flex;
     height:20%;
     gap: 12px;
 }
 
-.overview-page > .content > .right > .budgets > .data > .info > .budget-card > .color {
+.budgets.overview-card .data .info .ticket .color {
     width: 5px;
     height: 100%;
 }
 
-.overview-page > .content > .right > .budgets > .data > .info > .budget-card > .details {
+.budgets.overview-card .data .info .ticket .details {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
-.overview-page > .content > .right > .budgets > .data > .info > .budget-card > .details > .title {
+.budgets.overview-card .data .info .ticket .details .title {
     font-size: 0.8em;
 }
 
-.overview-page > .content > .right > .budgets > .data > .info > .budget-card > .details > .amount {
+.budgets.overview-card .data .info .ticket .details .amount {
    font-weight: bolder;
 }
 
-.overview-page > .content > .right > .bills {
-    height: 50%;
-}
+/* **************** RECURRING BILLS **********************************88 */
 
-.overview-page > .content > .right > .bills > .header {
-    display: flex;
-    justify-content: space-between;
-    place-items: center;
-    height:15%;
-}
-
-.overview-page > .content > .right > .bills > .header > .title {
-    font-weight: bolder;
-    font-size: 1.2em;
-}
-
-.overview-page > .content > .right > .bills > .header > .see-details {
-    font-size: 0.8em;
-    cursor: pointer;
-    opacity: 0.7;
-}
-
-.overview-page > .content > .right > .bills > .header > .see-details:hover {
-    opacity: 1;
-}
-
-.overview-page > .content > .right > .bills > .cards {
+.bills.overview-card .cards {
     display: flex;
     flex-direction: column;
     width:100%;
@@ -378,7 +316,7 @@
     gap: 12px;
 }
 
-.overview-page > .content > .right > .bills > .cards > .bills-card {
+.bills.overview-card .cards .info-card {
     width: 100%;
     height:33%;
     background-color: rgb(223, 217, 210);
@@ -390,18 +328,19 @@
     box-sizing: border-box;
 }
 
-.overview-page > .content > .right > .bills > .cards > .bills-card > .amount {
+.bills.overview-card .cards .info-card .amount {
     font-weight: bolder;
 }
 
-.overview-page > .content > .right > .bills > .cards > .bills-card.color1 {
+.bills.overview-card .cards .info-card.color1 {
     border-left: 5px solid #277C78;
 }
 
-.overview-page > .content > .right > .bills > .cards > .bills-card.color2 {
+.bills.overview-card .cards .info-card.color2 {
     border-left: 5px solid #F2CDAC;
 }
 
-.overview-page > .content > .right > .bills > .cards > .bills-card.color3 {
+.bills.overview-card .cards .info-card.color3 {
     border-left: 5px solid #82C9D7 !important;
 }
+

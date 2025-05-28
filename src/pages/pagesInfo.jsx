@@ -13,7 +13,7 @@ export const pagesInfoData = {
             id:"signup",
             type:"logo",
             component: Signup,
-            default:true,
+            default:false,
         },
         {
             id:"login",
@@ -27,7 +27,7 @@ export const pagesInfoData = {
             title:"Overview",
             icon:"home",
             component: Overview,
-            default:false,
+            default:true,
         },
         {
             id:"transactions",
