@@ -9,7 +9,7 @@ function App() {
 
   useEffect(() => {
     const pagePath = window.location.pathname;
-    const gotoPage = pagePath === '/signup' ? pagePath : getCookie("username") ? "/" : "/login";
+    const gotoPage = pagePath === '/signup' ? pagePath : getCookie("username") ? (pagePath ? pagePath : "/") : "/login";
     navigate(gotoPage);
   }, [navigate]);
 
