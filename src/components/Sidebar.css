@@ -1,34 +1,55 @@
 .sidebar {
-    height: 100%;
+    width:100%;
     background-color: black;
     color:white;
+    transition: width 0.2s ease;
+}
+
+.sidebar.landscape {
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
     display: inline-flex;
 }
 
+.sidebar.portrait {
+    border-top-right-radius: 20px;
+    border-top-left-radius: 20px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.sidebar.close {
+    width: 50px;
+}
+
 .sidebar-content {
     display: flex;
+}
+
+.sidebar-content.landscape {
     flex-direction: column;
-    transition: width 0.2s ease;
+    transition: width 0.3s ease;
+}
+
+.sidebar-content.portrait {
+    width: 100%;
 }
 
 .sidebar-content.open {
     visibility: visible;
-    width: 250px;
 }
 
 .sidebar-content.close {
     visibility: hidden;
-    width: 10px;
+    width: 10%;
 }
 
 .toggle-sidebar-btn {
-    padding-right:12px;
     font-weight: bolder;
     font-size: x-large;
     cursor: pointer;
     margin: auto;
+    padding: 4px;
 }
 
 .sidebar-title {
@@ -38,17 +59,39 @@
     margin-bottom: 24px;
 }
 
+.sidebar-title.portrait {
+    display: none;
+}
+
+.sidebar-items-container.portrait {
+    display: flex;
+    width:100%;
+    justify-content: space-around;
+}
+
 .sidebar-item {
+    display: flex;
+    place-items: center;
+    font-weight: bolder;
+    cursor: pointer;
+}
+
+.sidebar-item.landscape {
     margin-right : 30px;
-    height: 60px;
     border-top-right-radius: 20px;;
     border-bottom-right-radius: 20px;
-    display: flex;
-    align-items: center;
-    font-weight: bolder;
-    font-size: 1.2rem;
-    cursor: pointer;
     opacity: 0.5;
+    font-size: 1.2rem;
+}
+
+.sidebar-item.portrait {
+    flex-direction: column;
+    opacity: 1;
+    border-top-right-radius: 20px;
+    border-top-left-radius: 20px;
+    padding: 0 8px;
+    margin-top: 8px;
+    font-size: 12px;
 }
 
 .sidebar-item:hover {
@@ -62,13 +105,24 @@
 }
 
 .sidebar-item .sidebar-item-icon {
-    padding: 12px;
     font-size: 2rem;
+}
+
+.sidebar-item.landscape .sidebar-item-icon {
+    padding: 12px;
 }
 
 .sidebar-item.active .sidebar-item-icon {
     color:green;
 }
 
-.sidebar-item .sidebar-item-text {
+.sidebar-item-text {
+}
+
+.sidebar-item-text.landscape {
+    padding-right: 8px;
+}
+
+.sidebar-item-text.portrait {
+    padding-bottom: 8px;
 }

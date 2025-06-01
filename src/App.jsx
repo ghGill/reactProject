@@ -1,21 +1,36 @@
+import { useEffect, useState } from 'react'
+
 import './App.css'
-import Page from './pages/Page.jsx'
-import { getCookie } from './utils/cookies.jsx'
-import { useLocation } from 'wouter'
-import { useEffect } from 'react'
+import Pages from './Pages.jsx'
+import { AuthContextProvider } from './contexts/AuthContext.jsx'
+import { MediaResolutionProvider } from './contexts/MediaResolution.jsx'
+import { DB } from './utils/DB.jsx'
 
 function App() {
-  const [, navigate] = useLocation();
+  const [dbConnected, setDbConnected] = useState(false);
 
   useEffect(() => {
-    const pagePath = window.location.pathname;
-    const gotoPage = pagePath === '/signup' ? pagePath : getCookie("username") ? (pagePath ? pagePath : "/") : "/login";
-    navigate(gotoPage);
-  }, [navigate]);
+    DB.connect()
+      .then(result => {
+        setDbConnected(true);
+      })
+  }, [])
 
   return (
     <>
-      <Page />
+    {
+      dbConnected ? 
+      (
+        <MediaResolutionProvider>
+          <AuthContextProvider>
+            <Pages />
+          </AuthContextProvider>
+        </MediaResolutionProvider>
+      ) : 
+      (
+        <></>
+      )
+    }
     </>
   )
 }

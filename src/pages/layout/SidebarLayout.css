@@ -1,0 +1,22 @@
+.page {
+    display:flex;
+}
+
+.page.portrait {
+    flex-direction: column;
+}
+
+.sidebar-area {
+    display: flex;
+    flex-shrink: 0;
+}
+
+.sidebar-area.portrait {
+    order:1;
+}
+
+.content-area {
+    flex:1;
+    overflow-y: auto;
+}
+

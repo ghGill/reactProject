@@ -1,7 +1,6 @@
 .form {
     display: flex;
     flex-direction: column;
-    width: 30%;
     background-color: white;
     padding: 24px;
     border: 3px solid black;
@@ -49,6 +48,11 @@
 .form .footer a {
     cursor: pointer;
     text-decoration: underline;
+}
+
+.error-msg {
+    color: red;
+    text-align: center;
 }
 
 /* Signup extra classes */

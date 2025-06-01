@@ -1,5 +1,3 @@
-import './Page.css'
-
 function Transactions() {
     return (
         <div className="transactions center-data">

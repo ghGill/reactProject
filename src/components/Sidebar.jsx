@@ -1,78 +1,116 @@
-import './Sidebar.css'
-import { useState, useEffect } from 'react'
-import { pagesInfoData, getDefaultPageData } from '../pages/pagesInfo.jsx'
+import { useState, useContext } from 'react'
 import { useLocation } from 'wouter'
+import './Sidebar.css'
+import { AuthContext } from '../contexts/AuthContext';
+import { MediaResolution } from '../contexts/MediaResolution';
 
-function Sidebar({ pageId = null }) {
-    const [activeMenu, setActiveMenu] = useState(pageId ? pageId : getDefaultPageData("id"));
+function Sidebar({ route }) {
     const [sidebarState, setSidebarState] = useState("open");
     const [, navigate] = useLocation();
+    const context = useContext(AuthContext);
+    const {isDesktop, isTablet, isMobile } = useContext(MediaResolution);
 
-    function sidebarItemClick(pageId) {
-        setActiveMenu(pageId);
-        navigate(`/${pageId}`);
+    const pagesInfo = {
+        sidebar_title: "finance",
+        pages: [
+            {
+                routes:["/overview", "/"],
+                title:"Overview",
+                icon:"home",
+            },
+            {
+                routes:["/transactions"],
+                title:"Transactions",
+                icon:"exchange",
+            },
+            {
+                routes:["/budgets"],
+                title:"Budgets",
+                icon:"pie-chart",
+            },
+            {
+                routes:["/pots"],
+                title:"Pots",
+                icon:"money",
+            },
+            {
+                routes:["/recurring-bills"],
+                title:"Recurring Bills",
+                icon:"file-text-o",
+            },
+            {
+                routes:["/login"],
+                title:"Logout",
+                icon:"sign-out",
+            },
+        ],
+    }
+
+    function sidebarItemClick(route) {
+        navigate(route);
     }
 
     function toggleSidebar() {
         setSidebarState((sidebarState == "open") ? "close" : "open");
     }
 
-    useEffect(() => {
-        setActiveMenu(pageId);
-    }, [pageId])
+    function logout() {
+        context.setUser(null);
+        navigate('/login', { replace: true })
+    }
 
     return (
         <>
-            <div className={'sidebar'}>
-                <div className={`sidebar-content ${sidebarState}`}>
-                    <div className={'sidebar-title'}>
-                        {pagesInfoData.sidebar_title}
+            <div className={`sidebar ${sidebarState} ${!isDesktop ? 'portrait' : 'landscape'}`}>
+                <div className={`sidebar-content ${sidebarState} ${!isDesktop ? 'portrait' : 'landscape'}`}>
+                    <div className={`sidebar-title ${!isDesktop ? 'portrait' : ''}`}>
+                        {pagesInfo.sidebar_title}
                     </div>
 
-                    <div>
+                    <div className={`sidebar-items-container ${!isDesktop ? 'portrait' : ''}`}>
                         {
-                            pagesInfoData.pages.map(item => {
-                                return (item.type === "sidebar") ?
-                                    (
-                                        <SidebarItem
-                                            itemData={item}
-                                            key={item.title}
-                                            activeMenu={activeMenu}
-                                            onClick={sidebarItemClick}
-                                        />
-
-                                    ) : null
+                            pagesInfo.pages.map(item => {
+                                return (
+                                    <SidebarItem
+                                        isDesktop={isDesktop}
+                                        isMobile={isMobile}
+                                        itemData={item}
+                                        key={item.title}
+                                        activeRoute={route}
+                                        onClick={sidebarItemClick}
+                                    />
+                                )
                             })
                         }
                     </div>
-                    
-                    <div className={`sidebar-item`} onClick={() => { sidebarItemClick('login') }}>
-                        <div className="sidebar-item-icon">
-                            <i className={`fa fa-sign-out`}></i>
-                        </div>
-                        <div className='sidebar-item-text'>
-                            <p>Logout</p>
-                        </div>
-                    </div>
                 </div>
 
-                <div className="toggle-sidebar-btn">
-                    <div onClick={toggleSidebar}>{(sidebarState == "open") ? "<<" : ">>"}</div>
-                </div>
+                {
+                    isDesktop &&
+                    <div className="toggle-sidebar-btn">
+                        <div onClick={toggleSidebar}>{(sidebarState == "open") ? "<<" : ">>"}</div>
+                    </div>
+                }
             </div>
         </>
     )
 }
 
-function SidebarItem({ itemData, activeMenu, onClick }) {
+function SidebarItem({ itemData, activeRoute, onClick, isDesktop, isMobile }) {
+    const itemClass = `sidebar-item ${itemData.routes.includes(activeRoute) ? 'active' : ''} ${isDesktop ? 'landscape' : 'portrait'}`;
+
     return (
-        <div className={`sidebar-item ${itemData.id === activeMenu ? 'active' : ''}`} onClick={() => { onClick(itemData.id) }}>
-            <div className="sidebar-item-icon">
+        <div className={`${itemClass}`} onClick={() => { onClick(itemData.routes[0]) }}>
+            <div className={`sidebar-item-icon ${isDesktop ? 'landscape' : 'portrait'}`}>
                 <i className={`fa fa-${itemData.icon}`}></i>
             </div>
-            <div className='sidebar-item-text'>
-                <p>{itemData.title}</p>
-            </div>
+
+            {
+                !isMobile &&
+                <div className={`sidebar-item-text ${isDesktop ? 'landscape' : 'portrait'}`}>
+                    <div>{itemData.title}</div>
+                </div>
+            }
         </div>
     )
 }

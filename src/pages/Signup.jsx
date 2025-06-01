@@ -1,25 +1,37 @@
-import './Login.css'
-import { pagesInfoData, getPageDataById } from './pagesInfo'
-import { createCookie } from '../utils/cookies.jsx'
 import { useState } from 'react';
 import { useLocation, Link } from 'wouter'
 
+import './Login.css'
+// import { createCookie } from '../utils/cookies.jsx'
+import { DB } from '../utils/DB.jsx';
+
 function Signup() {
-    const [form, setForm] = useState({username:"", email:"", password:""});
+    const emptyMsg = '\u00A0';
+
+    const [form, setForm] = useState({name:"", email:"", password:""});
     const [, navigate] = useLocation();
+    const [errMsg, setErrMsg] = useState(emptyMsg);
 
     function inputOnChange(event) {
+        setErrMsg(emptyMsg);
+
         const { name, value } = event.target;
 
         setForm({ ...form, [name]:value});
     }
 
-    function signup(event) {
+    async function signup(event) {
         event.preventDefault();
 
-        createCookie("username", form.username);
+        // createCookie("username", form.username);
+        const result = await DB.addUsere(form);
+console.log(result);
 
-        navigate("/login");
+        if (result === true)
+            navigate("/login");
+        else {
+            setErrMsg(result);
+        }
     }
 
     return (
@@ -29,7 +41,7 @@ function Signup() {
         <div className="content">
             <div className="element">
                 <label htmlFor="username">Name</label>
-                <input onChange={inputOnChange} type="text" name="username" value={form.username} required></input>
+                <input onChange={inputOnChange} type="text" name="name" value={form.username} required></input>
             </div>
 
             <div className="element">
@@ -39,12 +51,13 @@ function Signup() {
 
             <div className="element">
                 <label htmlFor="password">Create Password</label>
-                <input onChange={inputOnChange} type="text" name="password" value={form.password} required></input>
-                <label className="password-validation-msg">Passwords must be at least 8 characters</label>
+                <input onChange={inputOnChange} type="text" name="password" value={form.password} required pattern=".{8,}"></input>
+                <label className="password-validation-msg"><b>Passwords must be at least 8 characters</b></label>
             </div>
 
             <div className="element">
                 <button type="submit">Create Account</button>
+                <div className='error-msg'>{errMsg}</div>
             </div>
 
             <div className="footer">
