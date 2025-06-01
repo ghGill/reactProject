@@ -92,7 +92,7 @@ function Overview({ changePageHandler }) {
                 <div className="title">Overview</div>
             </div>
             
-            <div className={`top-cards ${!isDesktop ? 'portrait' : ''}`}>
+            <div className={`top-cards ${isMobile ? 'mobile' : ''}`}>
                 <Card active="true" title="Current Balance" amount="$4,836.60" />
                 <Card active="false"  title="Income" amount="$3,814.25"/>
                 <Card active = "false"  title="Expenses" amount="$1,700.50" />
