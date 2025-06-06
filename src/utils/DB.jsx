@@ -1,35 +1,53 @@
 class DBclass {
     constructor() {
         this.usersTable = []
-        this.dbUrl = "https://raw.githubusercontent.com/ghGill/reactProjectDB/refs/heads/main/";
+        this.dbUrl = (process.env.NODE_ENV === 'development')  ? "/" : "https://raw.githubusercontent.com/ghGill/reactProjectDB/refs/heads/main/";
+        this.db = {};
+        this.usersJson = {};
+        this.categoriesJson = {};
     }
     
-    async connect() {
-        await this.readTable('users.json');
-    }
-
-    async readTable(tableName) {
-        await fetch(`${this.dbUrl}${tableName}`)
+    async connect(jsonFileName) {
+        await fetch(`${this.dbUrl}db.json`)
             .then(async res => {
                 const data = await res.json();
-                this.setUsers(data);
+                
+                this.db = data;
 
+                this.setTablesToJson();
+                
                 return true;
             })
             .catch(e => {
-                this.setUsers([]);
-
-                return true
+                return false
             })
     }
 
-    setUsers(users) {
-        this.usersTable = users;
+    setTablesToJson() {
+        const users = this.getTable('users');
+        
+        for (let u=0; u < users.length; u++) {
+            this.usersJson[users[u].id] = users[u];
+        }
+
+        const categories = this.getTable('categories');
+        
+        for (let c=0; c < categories.length; c++) {
+            this.categoriesJson[categories[c].id] = categories[c];
+        }
+    }
+
+    getUsersJson() {
+        return this.usersJson;
+    }
+
+    getCategoriesJson() {
+        return this.categoriesJson;
     }
 
     async emailExist(email) {
         return new Promise((resolve, reject) => {
-            const result = this.usersTable.find(user => (user.email === email));
+            const result = this.db.users.find(user => (user.email === email));
 
             resolve(result !== undefined);
         })
@@ -42,19 +60,19 @@ class DBclass {
         let newUser = {
             ...user,
             'id': this.usersTable.length + 1,
-            'image': 'default.png',
+            'image': 'default.jpg',
             'amount': -259.50,
             'date': '18 Sep 2024'
         };
 
-        this.usersTable.push(newUser);
+        this.db.users.push(newUser);
 
         return true;
     }
 
     async getUser(email, password) {
         return new Promise((resolve, reject) => {
-            const result = this.usersTable.find(user => ((user.email === email) && (user.password === password)));
+            const result = this.db.users.find(user => ((user.email === email) && (user.password === password)));
 
             resolve(result);
         })
@@ -62,6 +80,14 @@ class DBclass {
 
     imageUrl(fileName) {
         return `${this.dbUrl}${fileName}`
+    }
+
+    getTable(tableName) {
+        return this.db[tableName]
+    }
+
+    addTransaction(data) {
+        this.db.transactions.push(data);
     }
 }
 

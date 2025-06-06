@@ -18,5 +18,14 @@
 .content-area {
     flex:1;
     overflow-y: auto;
+    margin: 0px 24px 24px 24px;
+    padding:12px;
+    border-radius: 8px;
 }
 
+.page-header {
+    display: flex;
+    height: 80px;
+    font-size: 2em;
+    font-weight: bolder;
+}

@@ -1,0 +1,21 @@
+.custom-input-wrapper {
+    padding: 8px;
+}
+
+.custom-input-wrapper.one-row {
+    display: flex;
+}
+
+.custom-input-wrapper input {
+    width: 100%;
+    font-size: 16px;
+    padding: 8px;
+    border: 1px solid black;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.custom-input-wrapper label.one-row {
+    flex-shrink: 0;
+    padding-right: 8px;;
+}

@@ -1,0 +1,267 @@
+{
+	"users":
+	[
+		{
+			"id": 1,
+			"name": "Nil Darson",
+			"email":"user1@users.com",
+			"password":"user1",
+			"image": "user1.jpg"
+		},
+		{
+			"id": 2,
+			"name": "John Kelly",
+			"email":"user2@users.com",
+			"password":"user2",
+			"image": "user2.jpg"
+		},
+		{
+			"id": 3,
+			"name": "Sara Kite",
+			"email":"user3@users.com",
+			"password":"user3",
+			"image": "user3.jpg"
+		},
+		{
+			"id": 4,
+			"name": "Roger Brown",
+			"email":"user4@users.com",
+			"password":"user4",
+			"image": "user4.jpg"
+		},
+		{
+			"id": 5,
+			"name": "Jenifer Miles",
+			"email":"user5@users.com",
+			"password":"user5",
+			"image": "user5.jpg"
+		}
+	],
+
+	"overview_transactions":
+	[
+		{
+			"user_id": 1,
+			"amount": 75.50,
+			"date":"2024-08-18"
+		},
+		{
+			"user_id": 2,
+			"amount": -55.50,
+			"date":"2023-12-25"
+		},
+		{
+			"user_id": 3,
+			"amount": -42.30,
+			"date":"2024-11-29"
+		},
+		{
+			"user_id": 4,
+			"amount": 120.00,
+			"date":"2025-03-01"
+		},
+		{
+			"user_id": 5,
+			"amount": -65.00,
+			"date":"2025-02-02"
+		}
+	],
+	
+	"categories":
+	[
+		{
+			"id":1,
+			"name":"Entertainment"
+		},
+		{
+			"id":2,
+			"name":"Bills"
+		},
+		{
+			"id":3,
+			"name":"Groceries"
+		},
+		{
+			"id":4,
+			"name":"Dining Out"
+		},
+		{
+			"id":5,
+			"name":"Transportation"
+		},
+		{
+			"id":6,
+			"name":"Personal Care"
+		},
+		{
+			"id":7,
+			"name":"Education"
+		},
+		{
+			"id":8,
+			"name":"Lifestyle"
+		},
+		{
+			"id":9,
+			"name":"Shopping"
+		},
+		{
+			"id":10,
+			"name":"General"
+		}
+	],
+	
+	"transactions": 
+	[
+		{
+			"user_id":2,
+			"category_id": "3",
+			"date": "2024-08-12",
+			"amount":69
+		},
+		{
+			"user_id":5,
+			"category_id": "3",
+			"date": "2024-10-25",
+			"amount":-119.50
+		},
+		{
+			"user_id":3,
+			"category_id": "1",
+			"date": "2025-06-11",
+			"amount":175.00
+		},
+		{
+			"user_id":1,
+			"category_id": "9",
+			"date": "2023-05-05",
+			"amount":240
+		},
+		{
+			"user_id":4,
+			"category_id": "2",
+			"date": "2025-01-17",
+			"amount":-50.22
+		},
+		{
+			"user_id":5,
+			"category_id": "7",
+			"date": "2024-09-14",
+			"amount":488.9
+		},
+		{
+			"user_id":3,
+			"category_id": "7",
+			"date": "2024-11-01",
+			"amount":-111.22
+		},
+		{
+			"user_id":4,
+			"category_id": "6",
+			"date": "2025-02-22",
+			"amount":22.1
+		},
+		{
+			"user_id":1,
+			"category_id": "2",
+			"date": "2024-12-17",
+			"amount":603
+		},
+		{
+			"user_id":2,
+			"category_id": "8",
+			"date": "2024-06-16",
+			"amount":-289.45
+		},
+		{
+			"user_id":1,
+			"category_id": "8",
+			"date": "2024-05-30",
+			"amount":47
+		},
+		{
+			"user_id":5,
+			"category_id": "3",
+			"date": "2025-07-07",
+			"amount":-771.24
+		},
+		{
+			"user_id":3,
+			"category_id": "6",
+			"date": "2025-03-03",
+			"amount":33.33
+		},
+		{
+			"user_id":3,
+			"category_id": "2",
+			"date": "2024-08-08",
+			"amount":44.0
+		},
+		{
+			"user_id":4,
+			"category_id": "6",
+			"date": "2023-10-13",
+			"amount":271.6
+		},
+		{
+			"user_id":1,
+			"category_id": "3",
+			"date": "2025-06-01",
+			"amount":-407.33
+		},
+		{
+			"user_id":2,
+			"category_id": "8",
+			"date": "2024-05-02",
+			"amount":500
+		},
+		{
+			"user_id":2,
+			"category_id": "4",
+			"date": "5",
+			"amount":-99.9
+		},
+		{
+			"user_id":4,
+			"category_id": "9",
+			"date": "2025-04-16",
+			"amount":370.00
+		},
+		{
+			"user_id":5,
+			"category_id": "3",
+			"date": "2025-05-12",
+			"amount":-490.21
+		},
+		{
+			"user_id":1,
+			"category_id": "5",
+			"date": "2025-02-20",
+			"amount":411
+		},
+		{
+			"user_id":2,
+			"category_id": "9",
+			"date": "2025-03-03",
+			"amount":61.6
+		},
+		{
+			"user_id":1,
+			"category_id": "4",
+			"date": "2024-11-11",
+			"amount":350.8
+		},
+		{
+			"user_id":5,
+			"category_id": "5",
+			"date": "2023-12-29",
+			"amount":166
+		},
+		{
+			"user_id":3,
+			"category_id": "4",
+			"date": "2024-12-12",
+			"amount":-57.55
+		}
+	]
+}

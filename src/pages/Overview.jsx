@@ -7,10 +7,20 @@ import { MediaResolution } from '../contexts/MediaResolution'
 
 function Overview({ changePageHandler }) {
     const [users, setUsers] = useState([]);
-    const { isDesktop, isTablet, isMobile } = useContext(MediaResolution);
+    const { isDesktop, isMobile } = useContext(MediaResolution);
 
     useEffect(() => {
-        setUsers(DB.usersTable);
+        // join data and display on screen from transactions table
+        const transactionsTable = DB.getTable('overview_transactions');
+        const dataTable = transactionsTable.map(tran => {
+            return {
+                ...tran, 
+                ...DB.getUsersJson()[tran.user_id],
+                "date":new Date(new Date(tran['date']).getTime()).toLocaleString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})
+            }
+        })
+        
+        setUsers(dataTable);
     }, [])
 
     function Card({ active, title, amount }) {
@@ -88,10 +98,6 @@ function Overview({ changePageHandler }) {
 
     return (
         <div className='overview-page'>
-            <div className='page-header'>
-                <div className="title">Overview</div>
-            </div>
-            
             <div className={`top-cards ${isMobile ? 'mobile' : ''}`}>
                 <Card active="true" title="Current Balance" amount="$4,836.60" />
                 <Card active="false"  title="Income" amount="$3,814.25"/>

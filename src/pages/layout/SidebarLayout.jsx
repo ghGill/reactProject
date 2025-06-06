@@ -3,7 +3,7 @@ import Sidebar from '../../components/Sidebar'
 import { MediaResolution } from '../../contexts/MediaResolution'
 import { useContext } from 'react'
 
-function SidebarLayout({ children, route }) {
+function SidebarLayout({ children, route, title }) {
     const { isDesktop } = useContext(MediaResolution);
 
     return (
@@ -13,7 +13,13 @@ function SidebarLayout({ children, route }) {
             </div>
 
             <div className="content-area">
-                {children}
+                <div className='page-header'>
+                    {title}
+                </div>
+
+                <div className=''>
+                    {children}
+                </div>
             </div>
         </div>
     )

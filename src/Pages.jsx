@@ -47,35 +47,35 @@ function Pages() {
             case '/':
             case '/overview':
                 return (
-                    <SidebarLayout route={route}>
+                    <SidebarLayout route={route} title="Overview">
                         <Overview />
                     </SidebarLayout>
                 )
 
             case '/pots':
                 return (
-                    <SidebarLayout route={route}>
+                    <SidebarLayout route={route} title="Pots">
                         <Pots />
                     </SidebarLayout>
                 )
 
             case '/transactions':
                 return (
-                    <SidebarLayout route={route}>
+                    <SidebarLayout route={route} title="Transactions">
                         <Transactions />
                     </SidebarLayout>
                 )
 
             case '/budgets':
                 return (
-                    <SidebarLayout route={route}>
+                    <SidebarLayout route={route} title="Budgets">
                         <Budgets />
                     </SidebarLayout>
                 )
 
             case '/recurring-bills':
                 return (
-                    <SidebarLayout route={route}>
+                    <SidebarLayout route={route} title="Recurring Bills">
                         <RecurringBills />
                     </SidebarLayout>
                 )
