@@ -71,42 +71,7 @@ tr .amount.plus {
     color: #277C7B;
 }
 
-/* ================ INPUT ================================== */
-
-.input-wrapper {
-    border: 2px solid black;
-    border-radius: 8px;
-    outline: auto;
-}
-
-.input-default-style {
-    padding: 12px 30px 12px 12px;
-    font-size: 16px;
-    border: none;
-    outline: none;
-}
-
-.input-default-style.mobile {
-    width: -webkit-fill-available;
-    font-size: 12px;
-}
-
-.input-container {
-    position: relative;
-}
-
-.input-container i {
-    position: absolute;
-    left: calc(100% - 25px);
-    top:15px;
-    font-size:larger;
-}
-
-.input-container.desktop {
-    flex: 2;
-}
-
-/* ================ SELECT ================================== */
+/* ================ FILTERS ================================== */
 
 .select-container {
     display: flex;
@@ -126,40 +91,9 @@ tr .amount.plus {
     border-radius: 8px;
 }
 
-.select-icons {
+.mobile-icons {
     display: flex;
-    flex: 1;
-    place-items: center;
-    justify-content: space-around;
-    font-size: 24px;    
-}
-
-.select-container.mobile {
-    display: flex;
-    flex-direction: column;
-    align-self: center;
-    font-size: 24px;
-    position: relative;
-}
-
-.select-container.mobile .dropdown-options {
-    font-size: 18px;
-    padding: 4px;
-    border-radius: 8px;
-    position: absolute;
-    top: 40px;
-    right:0;
-    background-color: white;
-    box-shadow: 4px 4px 10px black;
-}
-
-.select-container.mobile .dropdown-options .mobile-option {
-    padding: 0 8px;
-    margin-bottom: 12px;
-    text-align: center;
-}
-
-.select-container.mobile .dropdown-options .mobile-option.selected {
-    font-weight: bolder;
+    gap: 12px;
+    padding-left: 8px;
 }
 

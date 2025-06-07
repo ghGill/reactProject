@@ -8,20 +8,32 @@ function CustomInput( props ) {
 
     function onChange(event) {
         setValue(event.target.value);
-        props.updateValue.func(props.updateValue.prop, event.target.value);
+
+        const { updateCallback } = props;
+
+        if ('params' in updateCallback)
+            updateCallback.func(updateCallback.params, event.target.value);
+        else
+            updateCallback.func(event.target.value);
     }
 
+    const iconClass = props.icon ? 'with-icon' : ''
+
     return (
-        <div className={`custom-input-wrapper ${oneRowClass}`}>
-            <label 
-                htmlFor={props.name} 
-                className={`${oneRowClass}`}
-                style = { props.labelStyle || null }
-            >
-                {props.title}
-            </label>
+        <div className={`custom-input-wrapper ${oneRowClass} ${iconClass}`}>
+            {
+                props.title &&
+                <label 
+                    htmlFor={props.name} 
+                    className={`${oneRowClass}`}
+                    style = { props.labelStyle || null }
+                >
+                    {props.title}
+                </label>
+            }
             
             <input 
+                className={`${iconClass}`}
                 name = { props.name }
                 placeholder = { props.placeholder || null }
                 type = { props.type || "text" }
@@ -35,6 +47,10 @@ function CustomInput( props ) {
 
                 onChange = { onChange }
             />
+            {
+                props.icon &&
+                <i className={`fa fa-${props.icon}`}></i>
+            }        
         </div>
     )
 }

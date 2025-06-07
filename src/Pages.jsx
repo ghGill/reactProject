@@ -75,7 +75,7 @@ function Pages() {
 
             case '/recurring-bills':
                 return (
-                    <SidebarLayout route={route} title="Recurring Bills">
+                    <SidebarLayout route={route} title="RecurringBills">
                         <RecurringBills />
                     </SidebarLayout>
                 )

@@ -16,3 +16,8 @@
     background-color: gray;
     color: black;
 }
+
+.custom-button-wrapper.icon {
+    display: flex;
+    align-items: center;    
+}

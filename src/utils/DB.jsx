@@ -87,6 +87,7 @@ class DBclass {
     }
 
     addTransaction(data) {
+        data.id = this.db.transactions.length + 1;
         this.db.transactions.push(data);
     }
 }
