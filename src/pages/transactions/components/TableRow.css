@@ -1,0 +1,25 @@
+.image-name-container {
+    display: flex;
+    place-items: center;
+}
+
+.image-name-container img {
+    width: 15%;
+    border-radius: 50%;
+}
+
+.image-name-container img.mobile {
+    width: 25%;
+}
+
+.image-name-container p {
+    padding-left: 24px;
+}
+
+tr .amount {
+    font-weight: bolder;
+}
+
+tr .amount.plus {
+    color: #277C7B;
+}

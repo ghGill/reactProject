@@ -1,0 +1,48 @@
+.pagination {
+    display: flex;
+    padding-top: 24px;
+    justify-content: space-between;
+}
+
+.pagination .numbers {
+    display: flex;
+}
+
+.pagination .btn {
+    padding: 4px;
+    cursor: pointer;
+    margin:4px;
+    font-weight: bolder;
+    border: 2px solid black;
+    border-radius: 8px;
+}
+
+.pagination .btn.number {
+    width: 24px;
+    height: 24px;
+    text-align: center;
+}
+
+.pagination .btn.number:not(.mobile) {
+    padding: 8px;
+}
+
+.pagination .btn.side {
+    display: flex;
+    gap: 12px;
+    place-items: center;
+    padding: 8px;
+    user-select: none;
+}
+
+.pagination .btn.side.disable {
+    cursor: default;
+    opacity: 0.5;
+    border-color: lightgray;
+}
+
+.pagination .numbers .btn.selected {
+    background-color: black;
+    color: white;
+    cursor: default;
+}
