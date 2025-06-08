@@ -1,7 +1,8 @@
-import { useState } from 'react';
 import './CustomButton.css'
 
 export function CustomButton( props ) {
+    const { errMsg } = props;
+
     return (
         <div className={`custom-button-wrapper`}>
             <button 
@@ -12,6 +13,11 @@ export function CustomButton( props ) {
             >
                 {props.text}
             </button>
+
+            {
+                errMsg &&
+                <div className='error-msg'>{errMsg}</div>
+            }
         </div>
     )
 }

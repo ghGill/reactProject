@@ -22,22 +22,6 @@
     flex-direction: column;
 }
 
-.form input {
-    font-size: 1.2rem;
-}
-
-.form button {
-    color: white;
-    background-color: black;
-    cursor: pointer;
-    border-radius: 5px;
-    padding: 8px;
-}
-
-.form button:hover {
-    background-color: grey;
-}
-
 .form .footer {
     display:flex;
     justify-content: center;
@@ -48,16 +32,4 @@
 .form .footer a {
     cursor: pointer;
     text-decoration: underline;
-}
-
-.error-msg {
-    color: red;
-    text-align: center;
-}
-
-/* Signup extra classes */
-
-.password-validation-msg {
-    text-align: right;
-    font-size: 12px;
 }

@@ -7,8 +7,8 @@ import { MediaResolution } from '../contexts/MediaResolution';
 function Sidebar({ route }) {
     const [sidebarState, setSidebarState] = useState("open");
     const [, navigate] = useLocation();
-    const context = useContext(AuthContext);
     const {isDesktop, isTablet, isMobile } = useContext(MediaResolution);
+    const context = useContext(AuthContext);
 
     const pagesInfo = {
         sidebar_title: "finance",
@@ -42,6 +42,7 @@ function Sidebar({ route }) {
                 routes:["/login"],
                 title:"Logout",
                 icon:"sign-out",
+                beforeNevigate: context.logout
             },
         ],
     }
@@ -52,11 +53,6 @@ function Sidebar({ route }) {
 
     function toggleSidebar() {
         setSidebarState((sidebarState == "open") ? "close" : "open");
-    }
-
-    function logout() {
-        context.setUser(null);
-        navigate('/login', { replace: true })
     }
 
     return (
@@ -99,8 +95,20 @@ function Sidebar({ route }) {
 function SidebarItem({ itemData, activeRoute, onClick, isDesktop, isMobile }) {
     const itemClass = `sidebar-item ${itemData.routes.includes(activeRoute) ? 'active' : ''} ${isDesktop ? 'landscape' : 'portrait'}`;
 
+    function itemClick(route) {
+        let nevigateParams = {};
+
+        // check if there is afunction to run before navigate
+        if (itemData.beforeNevigate) {
+            nevigateParams = { replace : true };
+            itemData.beforeNevigate();
+        }
+
+        onClick(route, nevigateParams);
+    }
+
     return (
-        <div className={`${itemClass}`} onClick={() => { onClick(itemData.routes[0]) }}>
+        <div className={`${itemClass}`} onClick={() => { itemClick(itemData.routes[0]) }}>
             <div className={`sidebar-item-icon ${isDesktop ? 'landscape' : 'portrait'}`}>
                 <i className={`fa fa-${itemData.icon}`}></i>
             </div>

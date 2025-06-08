@@ -59,7 +59,7 @@ class DBclass {
 
         let newUser = {
             ...user,
-            'id': this.usersTable.length + 1,
+            'id': this.db.users.length + 1,
             'image': 'default.jpg',
             'amount': -259.50,
             'date': '18 Sep 2024'
@@ -67,12 +67,14 @@ class DBclass {
 
         this.db.users.push(newUser);
 
+        this.usersJson[this.db.users.length] = newUser;
+
         return true;
     }
 
-    async getUser(email, password) {
+    async getUser(query) {
         return new Promise((resolve, reject) => {
-            const result = this.db.users.find(user => ((user.email === email) && (user.password === password)));
+            const result = this.db.users.find(user => Object.entries(query).every(([key, value]) => user[key] === value));
 
             resolve(result);
         })

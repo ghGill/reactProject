@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useLocation, Link } from 'wouter'
 
+import CustomInput from '../components/CustomInput.jsx';
+import { CustomButton } from '../components/CustomButton.jsx';
 import './Login.css'
-// import { createCookie } from '../utils/cookies.jsx'
 import { DB } from '../utils/DB.jsx';
 
 function Signup() {
@@ -12,20 +13,16 @@ function Signup() {
     const [, navigate] = useLocation();
     const [errMsg, setErrMsg] = useState(emptyMsg);
 
-    function inputOnChange(event) {
-        setErrMsg(emptyMsg);
+    function updateSignupData(prop, val) {
+        setErrMsg(emptyMsg)
 
-        const { name, value } = event.target;
-
-        setForm({ ...form, [name]:value});
+        setForm({ ...form, [prop]:val});
     }
 
     async function signup(event) {
         event.preventDefault();
 
-        // createCookie("username", form.username);
         const result = await DB.addUsere(form);
-console.log(result);
 
         if (result === true)
             navigate("/login");
@@ -40,24 +37,48 @@ console.log(result);
 
         <div className="content">
             <div className="element">
-                <label htmlFor="username">Name</label>
-                <input onChange={inputOnChange} type="text" name="name" value={form.username} required></input>
+                <div className="element">
+                    <CustomInput 
+                        name="username" 
+                        title="Name" 
+                        value={form.username}
+                        updateCallback = {{"params":'username', "func":updateSignupData}}
+                        required
+                    />
+                </div>
             </div>
 
             <div className="element">
-                <label htmlFor="email">Email</label>
-                <input onChange={inputOnChange} type="email" name="email" value={form.email} required></input>
+                <CustomInput 
+                    name="email" 
+                    type="email"
+                    title="Email" 
+                    value={form.email}
+                    updateCallback = {{"params":'email', "func":updateSignupData}}
+                    required
+                />
             </div>
 
             <div className="element">
-                <label htmlFor="password">Create Password</label>
-                <input onChange={inputOnChange} type="text" name="password" value={form.password} required pattern=".{8,}"></input>
-                <label className="password-validation-msg"><b>Passwords must be at least 8 characters</b></label>
+                <CustomInput 
+                    name="password" 
+                    title="Create Password" 
+                    value={form.password}
+                    updateCallback = {{"params":'password', "func":updateSignupData}}
+                    required
+                    pattern=".{8,}"
+                    instruction="Passwords must be at least 8 characters"
+                    instructionStyle={{textAlign: "right", fontSize: "12px"}}
+                />
             </div>
 
             <div className="element">
-                <button type="submit">Create Account</button>
-                <div className='error-msg'>{errMsg}</div>
+                <CustomButton 
+                    name="createaccount" 
+                    text="Create Account" 
+                    type="submit"
+                    errMsg = { errMsg }
+                />
             </div>
 
             <div className="footer">

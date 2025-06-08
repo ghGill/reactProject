@@ -13,21 +13,19 @@ import RecurringBills from './pages/RecurringBills';
 import Budgets from './pages/Budgets';
 
 import { AuthContext } from './contexts/AuthContext'
-import { MediaResolution } from './contexts/MediaResolution';
 
 function Pages() {
-    const mediaResolution = useContext(MediaResolution);
     const context = useContext(AuthContext);
     const [location] = useLocation();
 
     function pageContent(route='/') {
         route = route.toLowerCase();
 
-        // if (route !== '/signup') {
-        //     if (!context.user) {
-        //         route = '/login'
-        //     }
-        // }
+        if (route !== '/signup') {
+            if (!context.user) {
+                route = '/login'
+            }
+        }
 
         switch (route) {
             case '/signup':

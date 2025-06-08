@@ -1,8 +1,10 @@
-export function createCookie(key, value, expHours = 1/6) {
+export const AUTH_COOKIE_NAME = 'authuser'
+
+export function createCookie(name, value, expHours = 1/6) {
     const d = new Date();
     d.setTime(d.getTime() + (expHours * 60 * 60 * 1000));
     let expires = "expires=" + d.toUTCString();
-    document.cookie = key + "=" + value + ";" + expires + ";path=/";
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
 }
 
 export function getCookie(cookieKey) {
@@ -18,7 +20,7 @@ export function getCookie(cookieKey) {
     return null;
 }
 
-export function deleteCookie(key) {
-    createCookie(key, '', 0);
+export function deleteCookie(name) {
+    createCookie(name, 0, 0);
 }
 

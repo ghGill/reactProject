@@ -51,6 +51,10 @@ function CustomInput( props ) {
                 props.icon &&
                 <i className={`fa fa-${props.icon}`}></i>
             }        
+            {
+                props.instruction &&
+                <div style={ props.instructionStyle || null }>{ props.instruction }</div>
+            }        
         </div>
     )
 }

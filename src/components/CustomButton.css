@@ -21,3 +21,8 @@
     display: flex;
     align-items: center;    
 }
+
+.error-msg {
+    color: red;
+    text-align: center;
+}

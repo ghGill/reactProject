@@ -1,9 +1,13 @@
 import { useContext, useState } from 'react';
 import { useLocation, Link } from 'wouter'
 
+import CustomInput from '../components/CustomInput';
+import { CustomButton } from '../components/CustomButton';
 import './Login.css'
 import { DB } from '../utils/DB';
 import { AuthContext } from '../contexts/AuthContext';
+import { AUTH_COOKIE_NAME, createCookie } from '../utils/cookies.jsx'
+
 
 function Login({ changePageHandler }) {
     const emptyMsg = '\u00A0';
@@ -13,46 +17,63 @@ function Login({ changePageHandler }) {
     const [errMsg, setErrMsg] = useState(emptyMsg);
     const context = useContext(AuthContext)
 
-    function inputOnChange(event) {
+    function updateLoginData(prop, val) {
         setErrMsg(emptyMsg)
 
-        const { name, value } = event.target;
-
-        setForm({ ...form, [name]:value});
+        setForm({ ...form, [prop]:val});
     }
 
     async function login() {
         event.preventDefault();
 
-        const user = await DB.getUser(form.email, form.password);
+        const user = await DB.getUser({"email":form.email, "password":form.password});
 
-        if (user === undefined)
+        if (user === undefined) {
             setErrMsg("Invalid email or password.")
+        }
         else {
+            createCookie(AUTH_COOKIE_NAME, user.id);
+
             context.setUser(user);
             navigate("/");
         }
     }
 
     return (
-      <form className="form">
+      <form className="form" onSubmit={login}>
         <h1 className="title">Login</h1>
 
         <div className="content">
             <div className="element">
-                <label htmlFor="email">Email</label>
-                <input onChange={inputOnChange} type="text" name="email" value={form.email} required></input>
+                <CustomInput 
+                    name="email" 
+                    type="email"
+                    title="Email" 
+                    value={form.email}
+                    updateCallback = {{"params":'email', "func":updateLoginData}}
+                    required
+                />
             </div>
 
             <div className="element">
-                <label htmlFor="password">Password</label>
-                <input onChange={inputOnChange} type="password" name="password" value={form.password} required></input>
+                <CustomInput 
+                    name="password" 
+                    type="password"
+                    title="Password" 
+                    value={form.password}
+                    updateCallback = {{"params":'password', "func":updateLoginData}}
+                    required
+                />
             </div>
 
             
             <div className="element">
-                <button onClick={login} type="button">Login</button>
-                <div className='error-msg'>{errMsg}</div>
+                <CustomButton 
+                    name="login" 
+                    text="Login"
+                    type="submit" 
+                    errMsg = { errMsg }
+                />
             </div>
 
             <div className="footer">

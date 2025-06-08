@@ -6,6 +6,7 @@ import Modal from '../components/Modal';
 import CustomInput from '../components/CustomInput';
 import { CustomSelect, CustomIconSelect } from '../components/CustomSelect';
 import { CustomButton, CustomIconButton } from '../components/CustomButton';
+import { AuthContext } from '../contexts/AuthContext';
 
 function TableRow({ data, resolution }) {
     let amount = `${data.amount > 0 ? '+' : '-'}$${parseFloat(Math.abs(data.amount)).toFixed(2)}`;
@@ -92,6 +93,8 @@ function Transactions() {
     const { isDesktop, isMobile } = useContext(MediaResolution);
     const resolution = isDesktop ? 'desktop' : 'mobile';
 
+    const context = useContext(AuthContext);
+
     useEffect(() => {
         const transactionsTable = DB.getTable('transactions');
 
@@ -117,10 +120,6 @@ function Transactions() {
     }
 
     // ========================== SEARCH ======================================
-    
-    // function searchOnChange(event) {
-    //     setSearchText(event.target.value);
-    // }
 
     function searchTransactions(transactions) {
         if (searchText)
@@ -221,7 +220,7 @@ function Transactions() {
     function saveNewTransaction(event) {
         event.preventDefault();
 
-        newTransactionData.user_id = newTransactionData.user_id || "1";
+        newTransactionData.user_id = context.user.id;
         newTransactionData.date = new Date().toISOString().split('T')[0];
 
         DB.addTransaction(newTransactionData);
