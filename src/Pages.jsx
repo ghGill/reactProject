@@ -8,7 +8,7 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Overview from './pages/Overview'
 import Pots from './pages/Pots';
-import Transactions from './pages/Transactions';
+import Transactions from './pages/transactions/Transactions';
 import RecurringBills from './pages/RecurringBills';
 import Budgets from './pages/Budgets';
 
