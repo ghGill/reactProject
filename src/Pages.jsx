@@ -18,8 +18,10 @@ const lazyComponent = ((componentPath) =>
 // )
 
 const SidebarLayout = lazyComponent('./pages/layout/SidebarLayout')
-const LogoLayout = lazyComponent('./pages/layout/LogoLayout')
-const Login = lazyComponent('./pages/Login')
+const LogoLayout = lazy(() => import('./pages/layout/LogoLayout'))
+const Login = lazy(() => import('./pages/Login'))
+// const LogoLayout = lazyComponent('./pages/layout/LogoLayout')
+// const Login = lazyComponent('./pages/Login')
 const Signup = lazyComponent('./pages/Signup')
 const Overview = lazyComponent('./pages/overview/Overview')
 const Pots = lazyComponent('./pages/pots/Pots')
