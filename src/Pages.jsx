@@ -3,30 +3,14 @@ import { useLocation } from "wouter";
 import Spinner from './components/Spinner';
 import { AuthContext } from './contexts/AuthContext'
 
-const lazyComponent = ((componentPath) => 
-    lazy(() => import(componentPath)
-))
-
-// const lazyComponent = ((componentPath) => 
-//     lazy(() => {
-//         return new Promise((resolve, reject) => {
-//                 setTimeout(() => {
-//                 resolve(import(componentPath))
-//             }, 2000)
-//         })  
-//     })
-// )
-
-const SidebarLayout = lazyComponent('./pages/layout/SidebarLayout')
+const SidebarLayout = lazy(() => import('./pages/layout/SidebarLayout'))
 const LogoLayout = lazy(() => import('./pages/layout/LogoLayout'))
 const Login = lazy(() => import('./pages/Login'))
-// const LogoLayout = lazyComponent('./pages/layout/LogoLayout')
-// const Login = lazyComponent('./pages/Login')
-const Signup = lazyComponent('./pages/Signup')
-const Overview = lazyComponent('./pages/overview/Overview')
-const Pots = lazyComponent('./pages/pots/Pots')
-const Transactions = lazyComponent('./pages/transactions/Transactions')
-const UnderConstruction = lazyComponent('./pages/UnderConstruction')
+const Signup = lazy(() => import('./pages/Signup'))
+const Overview = lazy(() => import('./pages/overview/Overview'))
+const Pots = lazy(() => import('./pages/pots/Pots'))
+const Transactions = lazy(() => import('./pages/transactions/Transactions'))
+const UnderConstruction = lazy(() => import('./pages/UnderConstruction'))
 
 function Pages() {
     const context = useContext(AuthContext);
@@ -98,7 +82,13 @@ function Pages() {
     return (
         <>
             <Suspense fallback={<Spinner />} >
-                { pageContent(location) }
+                { 
+                    new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            resolve(pageContent(location))
+                        }, 2000)
+                    })
+                }
             </Suspense>
         </>
     )
