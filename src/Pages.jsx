@@ -1,18 +1,26 @@
-import { useContext } from 'react'
+import { useContext, Suspense, lazy } from 'react'
 import { useLocation } from "wouter";
-
-import SidebarLayout from './pages/layout/SidebarLayout'
-import LogoLayout from './pages/layout/LogoLayout'
-
-import Login from './pages/Login'
-import Signup from './pages/Signup'
-import Overview from './pages/Overview'
-import Pots from './pages/Pots';
-import Transactions from './pages/transactions/Transactions';
-import RecurringBills from './pages/RecurringBills';
-import Budgets from './pages/Budgets';
-
+import Spinner from './components/Spinner';
 import { AuthContext } from './contexts/AuthContext'
+
+const lazyComponent = ((componentPath) => 
+    lazy(() => {
+        return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                resolve(import(componentPath))
+            }, 2000)
+        })  
+    })
+)
+
+const SidebarLayout = lazyComponent('./pages/layout/SidebarLayout')
+const LogoLayout = lazyComponent('./pages/layout/LogoLayout')
+const Login = lazyComponent('./pages/Login')
+const Signup = lazyComponent('./pages/Signup')
+const Overview = lazyComponent('./pages/overview/Overview')
+const Pots = lazyComponent('./pages/pots/Pots')
+const Transactions = lazyComponent('./pages/transactions/Transactions')
+const UnderConstruction = lazyComponent('./pages/UnderConstruction')
 
 function Pages() {
     const context = useContext(AuthContext);
@@ -67,14 +75,14 @@ function Pages() {
             case '/budgets':
                 return (
                     <SidebarLayout route={route} title="Budgets">
-                        <Budgets />
+                        <UnderConstruction />
                     </SidebarLayout>
                 )
 
             case '/recurring-bills':
                 return (
                     <SidebarLayout route={route} title="RecurringBills">
-                        <RecurringBills />
+                        <UnderConstruction />
                     </SidebarLayout>
                 )
 
@@ -83,7 +91,9 @@ function Pages() {
 
     return (
         <>
-            { pageContent(location) }
+            <Suspense fallback={<Spinner />} >
+                { pageContent(location) }
+            </Suspense>
         </>
     )
 }

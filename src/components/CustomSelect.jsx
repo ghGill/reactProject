@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './CustomSelect.css'
 
-export function CustomSelect( props ) {
-    const [value, setValue] = useState(props.value || '');
+export function CustomSelect( { selectData} ) {
+    const [value, setValue] = useState(selectData.value || '');
 
-    const oneRowClass = props.onerow ? 'one-row' : '';
+    const oneRowClass = selectData.onerow ? 'one-row' : '';
 
-    // updateParent(value);
-    
+    useEffect(() => {
+        updateParent(value);
+    }, [])
+
     function onChange(event) {
         setValue(event.target.value);
         
@@ -15,7 +17,7 @@ export function CustomSelect( props ) {
     }
 
     function updateParent(val) {
-        const { updateCallback } = props;
+        const { updateCallback } = selectData;
 
         if ('params' in updateCallback)
             updateCallback.func(updateCallback.params, val);
@@ -26,25 +28,29 @@ export function CustomSelect( props ) {
     return (
         <div className={`custom-select-wrapper ${oneRowClass}`}>
             <label 
-                htmlFor={props.name} 
+                htmlFor={selectData.name} 
                 className={`${oneRowClass}`}
-                style = { props.labelStyle || null }
+                style = { selectData.labelStyle || null }
             >
-                {props.title}
+                {selectData.title}
             </label>
             
             <select 
-                name = { props.name }
+                name = { selectData.name }
                 value = { value }
-                style = { props.style || null }
+                style = { selectData.style || null }
 
-                required = {props.required}
+                required = {selectData.required}
 
                 onChange = { onChange }
             >
                 {
-                    props.options.map(option => (
-                        <option key={option.text} value={option.value || option.text}>
+                    selectData.options.map((option, index) => (
+                        <option 
+                            key={option.text} 
+                            value={option.value || option.text}
+                            style = { option.style }
+                        >
                             {option.text}
                         </option>
                     ))
@@ -54,16 +60,17 @@ export function CustomSelect( props ) {
     )
 }
 
-export function CustomIconSelect(props) {
+export function CustomIconSelect({ selectData }) {
     const [options, setOptions] = useState([]);
 
     function openOptions(event) {
+       
         event.stopPropagation();
 
         if (options.length > 0)
             setOptions([]);
         else {
-            setOptions(props.options);
+            setOptions(selectData.options);
 
             const clickHandle = () => {
                 setOptions([]);
@@ -75,23 +82,24 @@ export function CustomIconSelect(props) {
     }
 
     function clickOption(event) {
-        props.onChange(event);
+        selectData.onChange(event);
         
         setOptions([]);
     }
 
     return (
         <div className='custom-icon-select-wrapper'>
-            <i className={props.icon} onClick={ (e) => { openOptions(e); }}></i>
-            <div className='dropdown-options'>
+            <i className={selectData.icon} onClick={ (e) => { openOptions(e); }}></i>
+            <div className='dropdown-options' style={ selectData.style || null }>
                 {
-                    props.options &&
-                    options.map(option => (
+                    selectData.options &&
+                    options.map((option, index) => (
                         <option 
                             key={option.text} 
                             value={option.value || option.text}
-                            className={`custom-option ${(option.value === parseInt(props.selected) ? 'selected' : '')}`} 
+                            className={`custom-option ${(option.value === parseInt(selectData.selected) ? 'selected' : '')}`} 
                             onClick={(e) => { clickOption(e) }}
+                            style = { option.style }
                         >
                             {option.text}
                         </option>

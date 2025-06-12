@@ -13,20 +13,21 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 24px;
+  padding: 12px;
   border: 3px solid black;
   background-color: white;
   border-radius: 12px;
   max-width: 500px;
+  min-width: 300px;
 }
 
-.modal .content .header .title {
-    font-size: 24px;
-    font-weight: bold;
-    padding-right: 24px;
+.modal .content .close {
+    display: flex;
+    justify-content: end;
+    padding-bottom: 12px;
 }
 
-.modal .content .header .close i {
+.modal .content .close i {
     padding: 4px;
     color: black;
     background-color: white;
@@ -35,11 +36,18 @@
     cursor: pointer;
 }
 
-.modal .content .header .close i:hover {
+.modal .content .close i:hover {
     background-color: black;
     color: white;
 }
 
+.modal .content .title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: left;
+    padding: 8px;
+}
+
 .modal .content .subtitle {
-    padding: 0 0 24px 0;
+    padding: 8px;
 }

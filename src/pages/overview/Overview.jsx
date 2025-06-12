@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from 'react'
 import './Overview.css'
-import chart from '../assets/budgets-chart.png'
+import chart from '../../assets/budgets-chart.png'
 import {Link} from 'wouter'
-import { DB } from '../utils/DB'
-import { MediaResolution } from '../contexts/MediaResolution'
+import { DB } from '../../utils/DB'
+import { MediaResolution } from '../../contexts/MediaResolution'
 
 function Overview({ changePageHandler }) {
     const [users, setUsers] = useState([]);

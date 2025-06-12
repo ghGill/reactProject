@@ -39,45 +39,61 @@ function Signup() {
             <div className="element">
                 <div className="element">
                     <CustomInput 
-                        name="username" 
-                        title="Name" 
-                        value={form.username}
-                        updateCallback = {{"params":'username', "func":updateSignupData}}
-                        required
+                        inputData= {
+                            {
+                                name: "username",
+                                title: "Name",
+                                value: form.username,
+                                updateCallback: {"params":'username', "func":updateSignupData},
+                                required: true
+                            }
+                        }                        
                     />
                 </div>
             </div>
 
             <div className="element">
                 <CustomInput 
-                    name="email" 
-                    type="email"
-                    title="Email" 
-                    value={form.email}
-                    updateCallback = {{"params":'email', "func":updateSignupData}}
-                    required
+                    inputData= {
+                        {
+                            name: "email",
+                            type: "email",
+                            title: "Email",
+                            value: form.email,
+                            updateCallback: {"params":'email', "func":updateSignupData},
+                            required: true
+                        }
+                    }                        
                 />
             </div>
 
             <div className="element">
                 <CustomInput 
-                    name="password" 
-                    title="Create Password" 
-                    value={form.password}
-                    updateCallback = {{"params":'password', "func":updateSignupData}}
-                    required
-                    pattern=".{8,}"
-                    instruction="Passwords must be at least 8 characters"
-                    instructionStyle={{textAlign: "right", fontSize: "12px"}}
+                    inputData= {
+                        {
+                            name: "password",
+                            title: "Create Password",
+                            value: form.password,
+                            updateCallback: {"params":'password', "func":updateSignupData},
+                            required: true,
+                            pattern: ".{8,}",
+                            instruction: "Passwords must be at least 8 characters",
+                            instructionStyle: {textAlign: "right", fontSize: "12px"}
+                        }
+                    }                    
                 />
             </div>
 
             <div className="element">
                 <CustomButton 
-                    name="createaccount" 
-                    text="Create Account" 
-                    type="submit"
-                    errMsg = { errMsg }
+                    btnData = {
+                        {
+                            name: "createaccount" ,
+                            text: "Create Account", 
+                            type: "submit",
+                            errMsg: errMsg
+                        }
+                    }
                 />
             </div>
 

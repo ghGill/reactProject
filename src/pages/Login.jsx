@@ -46,33 +46,45 @@ function Login({ changePageHandler }) {
         <div className="content">
             <div className="element">
                 <CustomInput 
-                    name="email" 
-                    type="email"
-                    title="Email" 
-                    value={form.email}
-                    updateCallback = {{"params":'email', "func":updateLoginData}}
-                    required
+                    inputData= {
+                        {
+                            name: "email" ,
+                            type: "email",
+                            title: "Email",
+                            value: form.email,
+                            updateCallback: {"params":'email', "func":updateLoginData},
+                            required:true
+                        }
+                    }
                 />
             </div>
 
             <div className="element">
                 <CustomInput 
-                    name="password" 
-                    type="password"
-                    title="Password" 
-                    value={form.password}
-                    updateCallback = {{"params":'password', "func":updateLoginData}}
-                    required
+                    inputData= {
+                        {
+                            name: "password",
+                            type: "password",
+                            title: "Password",
+                            value: form.password,
+                            updateCallback: {"params":'password', "func":updateLoginData},
+                            required: true
+                        }
+                    }
                 />
             </div>
 
             
             <div className="element">
                 <CustomButton 
-                    name="login" 
-                    text="Login"
-                    type="submit" 
-                    errMsg = { errMsg }
+                    btnData = {
+                        {
+                            name: "login" ,
+                            text: "Login",
+                            type: "submit" ,
+                            errMsg: errMsg
+                        }
+                    }
                 />
             </div>
 

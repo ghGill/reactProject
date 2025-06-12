@@ -1,6 +1,6 @@
 export const AUTH_COOKIE_NAME = 'authuser'
 
-export function createCookie(name, value, expHours = 1/6) {
+export function createCookie(name, value, expHours = 1) {
     const d = new Date();
     d.setTime(d.getTime() + (expHours * 60 * 60 * 1000));
     let expires = "expires=" + d.toUTCString();

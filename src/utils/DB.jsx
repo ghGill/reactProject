@@ -5,6 +5,8 @@ class DBclass {
         this.db = {};
         this.usersJson = {};
         this.categoriesJson = {};
+        this.colorsJson = {};
+        this.tableNextId = {};
     }
     
     async connect(jsonFileName) {
@@ -24,17 +26,36 @@ class DBclass {
     }
 
     setTablesToJson() {
+        // init next id structure
+        Object.keys(this.db).forEach( tableName => {
+            this.tableNextId[tableName] = this.getTable(tableName).length + 1;
+        });
+
         const users = this.getTable('users');
-        
         for (let u=0; u < users.length; u++) {
             this.usersJson[users[u].id] = users[u];
         }
 
         const categories = this.getTable('categories');
-        
         for (let c=0; c < categories.length; c++) {
             this.categoriesJson[categories[c].id] = categories[c];
         }
+
+        const colors = this.getTable('colors');
+        for (let c=0; c < colors.length; c++) {
+            this.colorsJson[colors[c].id] = colors[c];
+        }
+    }
+
+    getTable(tableName) {
+        return this.db[tableName]
+    }
+
+    getTableNextId(tableName) {
+        const id = this.tableNextId[tableName];
+        this.tableNextId[tableName]++;
+
+        return id;
     }
 
     getUsersJson() {
@@ -43,6 +64,10 @@ class DBclass {
 
     getCategoriesJson() {
         return this.categoriesJson;
+    }
+
+    getColorsJson() {
+        return this.colorsJson;
     }
 
     async emailExist(email) {
@@ -59,9 +84,9 @@ class DBclass {
 
         let newUser = {
             ...user,
-            'id': this.db.users.length + 1,
+            'id': this.getTableNextId('users'),
             'image': 'default.jpg',
-            'amount': -259.50,
+            'amount': 500,
             'date': '18 Sep 2024'
         };
 
@@ -84,13 +109,27 @@ class DBclass {
         return `${this.dbUrl}${fileName}`
     }
 
-    getTable(tableName) {
-        return this.db[tableName]
+    addTransaction(data) {
+        data.id = this.getTableNextId('transactions');
+        this.db.transactions.push(data);
     }
 
-    addTransaction(data) {
-        data.id = this.db.transactions.length + 1;
-        this.db.transactions.push(data);
+    addPot(data) {
+        data.id = this.getTableNextId('pots');
+        this.db.pots.push(data);
+    }
+
+    updatePot(potData) {
+        this.db.pots = this.db.pots.map(pot => {
+            if (pot.id === potData.id)
+                return potData
+            else
+                return pot
+        });
+    }
+
+    deletePot(potId) {
+        this.db.pots = this.db.pots.filter(pot => pot.id !== potId);
     }
 }
 

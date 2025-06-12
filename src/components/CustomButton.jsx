@@ -1,35 +1,35 @@
 import './CustomButton.css'
 
-export function CustomButton( props ) {
-    const { errMsg } = props;
-
+export function CustomButton( { btnData } ) {
     return (
-        <div className={`custom-button-wrapper`}>
+        <div className={`custom-button-wrapper ${btnData.noHover ? 'no-hover' : ''}`}>
             <button 
-                name = { props.name }
-                type= { props.type || "submit" }
-                style = { props.style || null }
-                onClick = { props.onClick || null }
+                name = { btnData.name }
+                type= { btnData.type || "submit" }
+                style = { btnData.style || null }
+                value = { btnData.value || null }
+                onClick = { btnData.onClick || null }
             >
-                {props.text}
+                {btnData.text}
             </button>
 
             {
-                errMsg &&
-                <div className='error-msg'>{errMsg}</div>
+                btnData.errMsg &&
+                <div className='error-msg'>{btnData.errMsg}</div>
             }
         </div>
     )
 }
 
-export function CustomIconButton( props ) {
+export function CustomIconButton( { btnData } ) {
     return (
         <div className={`custom-button-wrapper icon`}>
             <i 
-                name = { props.name }
-                className={props.icon} 
-                style = { props.style || null }
-                onClick = { props.onClick || null }
+                name = { btnData.name }
+                className={btnData.icon} 
+                style = { btnData.style || null }
+                value = { btnData.value || null }
+                onClick = { btnData.onClick || null }
             >
             </i>
         </div>

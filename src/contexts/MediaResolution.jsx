@@ -11,7 +11,7 @@ export function MediaResolutionProvider({ children }) {
     const [resolutions, setResolutions] = useState({isDesktop, isTablet, isMobile});
 
     useEffect(() => {
-        setResolutions({isDesktop, isTablet, isMobile});
+        setResolutions({isDesktop, isTablet, isMobile, mediaType:(isMobile ? 'mobile' : isTablet ? 'tablet' : 'desktop')});
     }, [isDesktop, isTablet, isMobile]);
 
     return (

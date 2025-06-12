@@ -1,15 +1,18 @@
 import { useState } from 'react';
 import './CustomInput.css'
 
-function CustomInput( props ) {
-    const [value, setValue] = useState(props.value || '');
+function CustomInput( { inputData } ) {
+    const [value, setValue] = useState(inputData.value);
 
-    const oneRowClass = props.onerow ? 'one-row' : '';
+    // display the label and the input in one row
+    const oneRowClass = inputData.onerow ? 'one-row' : '';
+
+    const iconClass = inputData.icon ? 'with-icon' : ''
 
     function onChange(event) {
         setValue(event.target.value);
 
-        const { updateCallback } = props;
+        const { updateCallback } = inputData;
 
         if ('params' in updateCallback)
             updateCallback.func(updateCallback.params, event.target.value);
@@ -17,43 +20,42 @@ function CustomInput( props ) {
             updateCallback.func(event.target.value);
     }
 
-    const iconClass = props.icon ? 'with-icon' : ''
-
     return (
         <div className={`custom-input-wrapper ${oneRowClass} ${iconClass}`}>
             {
-                props.title &&
+                inputData.title &&
                 <label 
-                    htmlFor={props.name} 
+                    htmlFor={inputData.name} 
                     className={`${oneRowClass}`}
-                    style = { props.labelStyle || null }
+                    style = { inputData.labelStyle || null }
                 >
-                    {props.title}
+                    {inputData.title}
                 </label>
             }
             
             <input 
                 className={`${iconClass}`}
-                name = { props.name }
-                placeholder = { props.placeholder || null }
-                type = { props.type || "text" }
+                name = { inputData.name }
+                placeholder = { inputData.placeholder || null }
+                type = { inputData.type || "text" }
                 value = { value }
-                minLength = { props.minlength || null }
-                maxLength = { props.maxlength || null }
-                pattern = { props.pattern || null }
-                style = { props.style || null }
+                minLength = { inputData.minlength || null }
+                maxLength = { inputData.maxlength || null }
+                min = { inputData.min }
+                pattern = { inputData.pattern || null }
+                style = { inputData.style || null }
 
-                required = {props.required}
+                required = {inputData.required}
 
                 onChange = { onChange }
             />
             {
-                props.icon &&
-                <i className={`fa fa-${props.icon}`}></i>
+                inputData.icon &&
+                <i className={`fa fa-${inputData.icon}`}></i>
             }        
             {
-                props.instruction &&
-                <div style={ props.instructionStyle || null }>{ props.instruction }</div>
+                inputData.instruction &&
+                <div style={ inputData.instructionStyle || null }>{ inputData.instruction }</div>
             }        
         </div>
     )

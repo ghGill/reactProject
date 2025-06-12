@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useContext } from "react";
+import { createContext, useState, useEffect } from "react";
 import { AUTH_COOKIE_NAME, deleteCookie, getCookie } from "../utils/cookies";
 import { DB } from "../utils/DB";
 

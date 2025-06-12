@@ -7,7 +7,7 @@ import { MediaResolution } from '../contexts/MediaResolution';
 function Sidebar({ route }) {
     const [sidebarState, setSidebarState] = useState("open");
     const [, navigate] = useLocation();
-    const {isDesktop, isTablet, isMobile } = useContext(MediaResolution);
+    const {isDesktop, isMobile } = useContext(MediaResolution);
     const context = useContext(AuthContext);
 
     const pagesInfo = {

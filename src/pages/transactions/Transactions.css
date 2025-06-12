@@ -1,30 +1,29 @@
-.active-area {
+.transactions-active-area {
     background-color: white;
     border-radius: 8px;
     padding: 24px;
 }
 
-.active-area .header {
+.transactions-active-area .header {
     display: flex;
     justify-content: space-between;
 }
 
-.active-area .header .filters {
+.transactions-active-area .header .filters {
     display: flex;
 }
 
-
-table {
+.transactions-active-area table {
     width: 100%;
     height: fit-content;
     table-layout: fixed;
 }
 
-table.t-header {
+.transactions-active-area table.t-header {
     margin-top: 24px;
 }
 
-td, th {
+.transactions-active-area td, th {
     text-align: left;
     padding-left: 4px;
     padding-right: 4px;
@@ -32,42 +31,41 @@ td, th {
     border-bottom: 1px solid rgb(240, 235, 235);
 }
 
-th {
+.transactions-active-area th {
     font-size: 12px;
     font-weight: normal;
 }
 
-td {
+.transactions-active-area td {
     font-size: 16px;
 }
 
-th:last-child,td:last-child {
+.transactions-active-area th:last-child,td:last-child {
     text-align: right;
 }
 
 /* ================ FILTERS ================================== */
 
-.select-container {
+.transactions-active-area .select-container {
     display: flex;
     align-items: center;
     font-size: 16px;
     padding: 0px 12px 0px 12px;
 }
 
-.select-container label {
+.transactions-active-area .select-container label {
     padding-right: 12px;
 }
 
-.select-container select {
+.transactions-active-area .select-container select {
     font-size: 16px;
     padding: 8px;
     border: 2px solid black;
     border-radius: 8px;
 }
 
-.mobile-icons {
+.transactions-active-area .mobile-icons {
     display: flex;
     gap: 12px;
     padding-left: 8px;
 }
-

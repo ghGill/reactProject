@@ -12,7 +12,7 @@
     padding: 8px;
 }
 
-.custom-button-wrapper button:hover {
+.custom-button-wrapper:not(.no-hover) button:hover {
     background-color: gray;
     color: black;
 }

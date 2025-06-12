@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './Pagination.css'
 
-function Pagination({ currentPage, totalPages, onClick, resolution }) {
+function Pagination({ currentPage, totalPages, onClick, mediaType }) {
     const numbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
     function btnClick(n) {
@@ -16,7 +16,7 @@ function Pagination({ currentPage, totalPages, onClick, resolution }) {
             >
                 <i className={`fa fa-arrow-left`}></i>
                 {
-                    (resolution !== 'mobile') &&
+                    (mediaType !== 'mobile') &&
                     <div>Prev</div>
                 }
             </div>
@@ -25,7 +25,7 @@ function Pagination({ currentPage, totalPages, onClick, resolution }) {
                     numbers.map(n => (
                         <div 
                             key={n}
-                            className={`btn number ${n === currentPage ? 'selected' : ''} ${resolution}`}
+                            className={`btn number ${n === currentPage ? 'selected' : ''} ${mediaType}`}
                             onClick = { () => { btnClick(n); } }
                         >
                             {n}
@@ -38,7 +38,7 @@ function Pagination({ currentPage, totalPages, onClick, resolution }) {
                 onClick = { () => { btnClick( Math.min(currentPage + 1, totalPages)); } }
             >
                 {
-                    (resolution !== 'mobile') &&
+                    (mediaType !== 'mobile') &&
                     <div>Next</div>
                 }
                 <i className={`fa fa-arrow-right`}></i>

@@ -28,7 +28,6 @@
 /* ======================== ICON SELECT================================ */
 
 .custom-icon-select-wrapper {
-    display: flex;
     flex-direction: column;
     align-self: center;
     font-size: 24px;
@@ -37,7 +36,6 @@
 
 .custom-icon-select-wrapper .dropdown-options {
     font-size: 18px;
-    padding: 4px;
     border-radius: 8px;
     position: absolute;
     top: 40px;

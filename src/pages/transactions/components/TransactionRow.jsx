@@ -1,10 +1,10 @@
-import './TableRow.css'
+import './TransactionRow.css'
 import { DB } from '../../../utils/DB';
 
-function TableRow({ data, resolution }) {
+function TableRow({ data, mediaType }) {
     let amount = `${data.amount > 0 ? '+' : '-'}$${parseFloat(Math.abs(data.amount)).toFixed(2)}`;
 
-    return (resolution === 'mobile') ?
+    return (mediaType === 'mobile') ?
     (
         <tr>
             <td>
@@ -13,7 +13,7 @@ function TableRow({ data, resolution }) {
                     <tr>
                         <td>
                             <div className='image-name-container'>
-                                <img src={DB.imageUrl(data.image)} alt="" className={resolution} />
+                                <img src={DB.imageUrl(data.image)} alt="" className={mediaType} />
                                 <b><p>{data.name}</p></b>
                             </div>
                         </td>
@@ -32,7 +32,7 @@ function TableRow({ data, resolution }) {
         <tr>
             <td>
                 <div className='image-name-container'>
-                    <img src={DB.imageUrl(data.image)} alt="" className={resolution} />
+                    <img src={DB.imageUrl(data.image)} alt="" className={mediaType} />
                     <b><p>{data.name}</p></b>
                 </div>
             </td>

@@ -1,0 +1,111 @@
+.pots-active-area {
+    border-radius: 8px;
+}
+
+.pots-active-area .header {
+    display: flex;
+    justify-content: end;
+}
+
+.pots-active-area .pots-cards-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    row-gap: 24px;
+}
+
+.pots-active-area .pots-cards-wrapper .pots-card {
+    width: 45%;
+    background-color: white;
+    border-radius: 8px;
+    height: 300px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.pots-active-area .pots-cards-wrapper .pots-card:not(.desktop) {
+    width:100%;
+}
+
+.pots-active-area .pots-cards-wrapper .pots-card .header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 24px;
+}
+
+.pots-active-area .pots-cards-wrapper .pots-card .header .left {
+    display: flex;
+    font-weight: bold;
+    place-items: center;
+    gap: 12px;;
+}
+
+.pots-active-area .pots-cards-wrapper .pots-card .header .right {
+    font-weight: bolder;
+    cursor: pointer;
+    user-select: none;
+}
+
+.pots-active-area .pots-cards-wrapper .pots-card .circle {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+}
+
+.pots-active-area .pots-cards-wrapper .pots-card .data {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 24px;
+}
+
+.pots-active-area .pots-cards-wrapper .pots-card .data .up {
+    display: flex;
+    justify-content: space-between;
+    place-items: center;
+}
+
+.pots-active-area .pots-cards-wrapper .pots-card .data .down {
+    display: flex;
+    justify-content: space-between;
+    place-items: center;
+}
+
+.pots-active-area .pots-cards-wrapper .pots-card .data .bars {
+    position: relative;
+}
+
+.pots-active-area .pots-cards-wrapper .pots-card .data .bar {
+    height:10px;
+}
+
+.pots-active-area .pots-cards-wrapper .pots-card .data .bar.full {
+    background-color: rgb(235, 226, 211);
+    width: inherit;
+}
+
+.pots-active-area .pots-cards-wrapper .pots-card .data .bar.progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.data-small-font {
+    font-size: 14px;
+}
+
+.data-big-font {
+    font-size: 36px;
+    font-weight: bolder;
+}
+
+.pots-active-area .pots-cards-wrapper .pots-card .buttons {
+    display: flex;
+    justify-content: space-around;
+}
+
+.pots-active-area .pots-cards-wrapper .pots-card .buttons .btn-wrapper:not(.mobile) {
+    width: 40%;
+}

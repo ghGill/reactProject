@@ -2,13 +2,13 @@ import { useState, useEffect, useContext } from 'react';
 import './Transactions.css'
 import { DB } from '../../utils/DB';
 import { MediaResolution } from '../../contexts/MediaResolution';
-import Modal from '../../components/Modal';
 import CustomInput from '../../components/CustomInput';
 import { CustomSelect, CustomIconSelect } from '../../components/CustomSelect';
 import { CustomButton, CustomIconButton } from '../../components/CustomButton';
 import { AuthContext } from '../../contexts/AuthContext';
-import TableRow from './components/TableRow';
+import TransactionRow from './components/TransactionRow';
 import Pagination from './components/Pagination';
+import AddTransactionModal from './components/AddTransactionModal'
 
 function Transactions() {
     const sortByOptions = [
@@ -40,9 +40,10 @@ function Transactions() {
     
     const categories = DB.getTable('categories');
     const allOption = {"value":999, "text": "All Transactions"};
+    const modalOptions = categories.map(cat => { return { "value":cat.id, "text":cat.name}});
     const categoryOptions = [allOption, ...categories.map(cat => { return {"value": cat.id, "text":cat.name}})];
 
-    const [allTransactions, setAllTransactions] = useState([]);
+    const [pageTransactions, setPageTransactions] = useState([]);
     const [viewTransactions, setViewTransactions] = useState([]);
     const [openModal, setOpenModal] = useState(false);
 
@@ -50,8 +51,7 @@ function Transactions() {
     const [categoryKey, setCategoryKey] = useState('');
     const [searchText, setSearchText] = useState('');
     
-    const { isDesktop, isMobile } = useContext(MediaResolution);
-    const resolution = isDesktop ? 'desktop' : 'mobile';
+    const { isMobile, mediaType } = useContext(MediaResolution);
 
     const context = useContext(AuthContext);
 
@@ -64,12 +64,12 @@ function Transactions() {
     }, [])
 
     useEffect(() => {
-        const transactions = getBulkTransaction();
+        const transactions = getCurrentPageTransaction();
 
-        setAllTransactions(transactions);
+        setPageTransactions(transactions);
     }, [currentPage])
 
-    function getBulkTransaction() {
+    function getCurrentPageTransaction() {
         const rowsPerPage = 10;
 
         const transactionsTable = DB.getTable('transactions');
@@ -170,7 +170,7 @@ function Transactions() {
     // ========================= REFRESH =======================================
 
     function refresh() {
-        let transactions = allTransactions.map(transaction => { return {...transaction} });
+        let transactions = pageTransactions.map(transaction => { return {...transaction} });
         transactions = filterByCategory(transactions);
         transactions = searchTransactions(transactions);
         transactions = sortTransactions(transactions);
@@ -180,12 +180,11 @@ function Transactions() {
 
     useEffect(() => {
         refresh();
-    }, [allTransactions, sortKey, categoryKey, searchText])
+    }, [pageTransactions, sortKey, categoryKey, searchText])
 
-    let newTransactionData = {};
+    // ================= MODAL ==============================
 
-    function openAddTransaction() {
-        newTransactionData = {"category_id":"", "amount":"0"};
+    function openAddTransactionModal() {
         setOpenModal(true)
     }
 
@@ -193,86 +192,44 @@ function Transactions() {
         setOpenModal(false);
     }
 
-    function updateNewTransactionData(prop, val) {
-        newTransactionData[prop] = val;
-    }
+    function saveNewTransaction(data) {
+        data.user_id = context.user.id;
+        data.date = new Date().toISOString().split('T')[0];
 
-    function saveNewTransaction(event) {
-        event.preventDefault();
+        DB.addTransaction(data);
 
-        newTransactionData.user_id = context.user.id;
-        newTransactionData.date = new Date().toISOString().split('T')[0];
+        const newTransaction = addTransactionExtraData(data);
 
-        DB.addTransaction(newTransactionData);
-
-        const newTransaction = addTransactionExtraData(newTransactionData);
-
-        let updatedTransactions = allTransactions.map(transaction => { return {...transaction} });
+        let updatedTransactions = pageTransactions.map(transaction => { return {...transaction} });
         updatedTransactions.push(newTransaction);
-        setAllTransactions(updatedTransactions);
+        setPageTransactions(updatedTransactions);
 
-        setOpenModal(false);
-    }
-
-    function AddTransactionModal() {
-        const title = "Add New Transaction";
-        const subTitle = "";
-        const options = categories.map(cat => { return { "value":cat.id, "text":cat.name}});
- 
-        return (
-            <Modal 
-                closeCallback={closeModal} 
-                title={title}
-                subtitle={subTitle}
-            >
-                <form onSubmit={ saveNewTransaction }>
-                    <CustomSelect 
-                        name="category" 
-                        title="Category" 
-                        required 
-                        style={{"fontSize":"16px"}}
-                        labelStyle= {{"fontSize":"16px"}}
-                        updateCallback = {{"params":'category_id', "func":updateNewTransactionData}}
-                        options = { options }
-                        value = { options[0].value || ''}
-                    />
-                    
-                    <CustomInput 
-                        name="amount" 
-                        type="number"
-                        title="Amount" 
-                        value="0"
-                        updateCallback = {{"params":'amount', "func":updateNewTransactionData}}
-                        style={{"fontSize":"16px"}}
-                        labelStyle= {{"fontSize":"16px"}}
-                    />
-                    
-                    <CustomButton 
-                        name="save" 
-                        text="Save" 
-                        style={{"fontSize":"24px"}}
-                        onClick= { saveNewTransaction }
-                    />
-                </form>
-            </Modal>
-        )
+        closeModal();
     }
 
     return (
-        <div className="active-area">
+        <div className="transactions-active-area">
             {
                 openModal &&
-                <AddTransactionModal />
+                <AddTransactionModal 
+                    closeHandler = { closeModal }
+                    saveHandler = { saveNewTransaction }
+                    options = { modalOptions }
+                />
             }
 
             <div className='header'>
                 <div>
                     <CustomInput 
-                        name="search" 
-                        value={searchText}
-                        updateCallback = {{"func":setSearchText}}
-                        placeholder='Search Transaction'
-                        icon='search'
+                        inputData= {
+                            {
+                                name: "search",
+                                value: searchText,
+                                updateCallback: {"func":setSearchText},
+                                placeholder: 'Search Transaction',
+                                icon: 'search'
+                            }
+                        }                    
                     />
                 </div>
                 <div className='filters'>
@@ -281,40 +238,56 @@ function Transactions() {
                         (
                         <span className='mobile-icons'>
                             <CustomIconSelect 
-                                options={sortByOptions} 
-                                value={sortKey} 
-                                onChange={ changedSortKey } 
-                                icon="fa fa-bars" 
-                                selected={sortKey} 
+                                selectData={
+                                    {
+                                        options: sortByOptions,
+                                        value: sortKey, 
+                                        onChange: changedSortKey,
+                                        icon: "fa fa-bars",
+                                        selected: sortKey
+                                    }
+                                }
                             />
                             
                             <CustomIconSelect 
-                                options={categoryOptions} 
-                                value={categoryKey} 
-                                onChange={ changedCategoryKey }  
-                                icon="fa fa-filter" 
-                                selected={categoryKey} 
+                                selectData={
+                                    {
+                                        options: categoryOptions,
+                                        value: categoryKey,
+                                        onChange: changedCategoryKey,
+                                        icon: "fa fa-filter",
+                                        selected: categoryKey
+                                    }
+                                }
                             />
                         </span>
                         ) :
                         (
                         <>
                             <CustomSelect 
-                                name="sortby" 
-                                title="Sort by" 
-                                updateCallback = {{"func": ((val) => { setSortKey(val) })}}
-                                options = { sortByOptions }
-                                value = { sortKey }
-                                onerow
+                                selectData={
+                                    {
+                                        name: "sortby",
+                                        title: "Sort by",
+                                        updateCallback: {"func": ((val) => { setSortKey(val) })},
+                                        options: sortByOptions,
+                                        value: sortKey,
+                                        onerow:true
+                                    }
+                                }
                             />
 
                             <CustomSelect 
-                                name="category" 
-                                title="Category" 
-                                updateCallback = {{"func": ((val) => { setCategoryKey(val) })}}
-                                options = { categoryOptions }
-                                value = { categoryKey }
-                                onerow
+                                selectData={
+                                    {
+                                        name: "category",
+                                        title: "Category",
+                                        updateCallback: {"func": ((val) => { setCategoryKey(val) })},
+                                        options: categoryOptions,
+                                        value: categoryKey,
+                                        onerow: true
+                                            }
+                                }
                             />
                         </>
                         )
@@ -324,18 +297,26 @@ function Transactions() {
                 {
                     isMobile ? (
                         <CustomIconButton 
-                            name="add"
-                            icon="fa fa-plus" 
-                            style={{"fontSize":"24px"}}
-                            onClick= { openAddTransaction }
+                            btnData = {
+                                {
+                                    name: "add",
+                                    icon: "fa fa-plus",
+                                    style: {"fontSize":"24px"},
+                                    onClick: openAddTransactionModal
+                                }
+                            }                            
                         />                        
                     ) :
                     (
                         <CustomButton 
-                            name="add" 
-                            text="Add New" 
-                            type="button"
-                            onClick= { openAddTransaction }
+                            btnData = {
+                                {
+                                    name: "add", 
+                                    text: "Add New" ,
+                                    type: "button",
+                                    onClick: openAddTransactionModal
+                                }
+                            }                            
                         />
                     )
                 }
@@ -355,7 +336,7 @@ function Transactions() {
                 <table>
                     <tbody>
                         {
-                            viewTransactions.map(transaction => <TableRow key={transaction.id} data={transaction} resolution={resolution} />)
+                            viewTransactions.map(transaction => <TransactionRow key={transaction.id} data={transaction} mediaType={mediaType} />)
                         }
                     </tbody>
                 </table>
@@ -365,7 +346,7 @@ function Transactions() {
                 currentPage={ currentPage } 
                 totalPages={ totalPages } 
                 onClick={ setCurrentPage }
-                resolution={ resolution }
+                mediaType={ mediaType }
             />
         </div>
     )
