@@ -4,14 +4,18 @@ import Spinner from './components/Spinner';
 import { AuthContext } from './contexts/AuthContext'
 
 const lazyComponent = ((componentPath) => 
-    lazy(() => {
-        return new Promise((resolve, reject) => {
-                setTimeout(() => {
-                resolve(import(componentPath))
-            }, 2000)
-        })  
-    })
-)
+    lazy(() => import(componentPath)
+))
+
+// const lazyComponent = ((componentPath) => 
+//     lazy(() => {
+//         return new Promise((resolve, reject) => {
+//                 setTimeout(() => {
+//                 resolve(import(componentPath))
+//             }, 2000)
+//         })  
+//     })
+// )
 
 const SidebarLayout = lazyComponent('./pages/layout/SidebarLayout')
 const LogoLayout = lazyComponent('./pages/layout/LogoLayout')
