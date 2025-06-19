@@ -4,7 +4,6 @@ import CustomInput from "../../../components/CustomInput";
 import { CustomButton } from "../../../components/CustomButton";
 import { CustomSelect } from "../../../components/CustomSelect";
 import Modal from '../../../components/Modal'
-import { DB } from "../../../utils/DB";
 import { PotFormDataContext } from "../context/PotFormDataProvider";
 
 function AddPotModal( {closeHandler, saveHandler, colors } ) {

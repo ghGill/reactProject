@@ -200,11 +200,13 @@ function PotCardFooter() {
 
         if (newValue > parseInt(data.target)) {
             setErrMsg('Total amount is greater than target.');
+            hideLoader();
             return;
         }
 
         if (newValue < 0) {
             setErrMsg('You cannot withdraw such an amount.');
+            hideLoader();
             return;
         }
 
