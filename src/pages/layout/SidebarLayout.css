@@ -11,7 +11,15 @@
     flex-shrink: 0;
 }
 
-.sidebar-area.portrait {
+.sidebar-area.desktop {
+    position: sticky;
+    top: 0;
+    left: 0;
+    height: 100%;
+    min-height: 100vh;
+}
+
+.sidebar-area:not(.desktop) {
     order:1;
 }
 

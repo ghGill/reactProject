@@ -1,135 +1,136 @@
+import getConfig from "../configuration/config";
+
 class DBclass {
     constructor() {
-        this.usersTable = []
-        this.dbUrl = (process.env.NODE_ENV === 'development')  ? "/" : "https://raw.githubusercontent.com/ghGill/reactProjectDB/refs/heads/main/";
-        this.db = {};
-        this.usersJson = {};
-        this.categoriesJson = {};
-        this.colorsJson = {};
-        this.tableNextId = {};
-    }
-    
-    async connect(jsonFileName) {
-        await fetch(`${this.dbUrl}db.json`)
-            .then(async res => {
-                const data = await res.json();
-                
-                this.db = data;
-
-                this.setTablesToJson();
-                
-                return true;
-            })
-            .catch(e => {
-                return false
-            })
-    }
-
-    setTablesToJson() {
-        // init next id structure
-        Object.keys(this.db).forEach( tableName => {
-            this.tableNextId[tableName] = this.getTable(tableName).length + 1;
-        });
-
-        const users = this.getTable('users');
-        for (let u=0; u < users.length; u++) {
-            this.usersJson[users[u].id] = users[u];
-        }
-
-        const categories = this.getTable('categories');
-        for (let c=0; c < categories.length; c++) {
-            this.categoriesJson[categories[c].id] = categories[c];
-        }
-
-        const colors = this.getTable('colors');
-        for (let c=0; c < colors.length; c++) {
-            this.colorsJson[colors[c].id] = colors[c];
-        }
-    }
-
-    getTable(tableName) {
-        return this.db[tableName]
-    }
-
-    getTableNextId(tableName) {
-        const id = this.tableNextId[tableName];
-        this.tableNextId[tableName]++;
-
-        return id;
-    }
-
-    getUsersJson() {
-        return this.usersJson;
-    }
-
-    getCategoriesJson() {
-        return this.categoriesJson;
-    }
-
-    getColorsJson() {
-        return this.colorsJson;
-    }
-
-    async emailExist(email) {
-        return new Promise((resolve, reject) => {
-            const result = this.db.users.find(user => (user.email === email));
-
-            resolve(result !== undefined);
-        })
-    }
-
-    async addUsere(user) {
-        if (await this.emailExist(user.email))
-            return 'This email is already registered.';
-
-        let newUser = {
-            ...user,
-            'id': this.getTableNextId('users'),
-            'image': 'default.jpg',
-            'amount': 500,
-            'date': '18 Sep 2024'
-        };
-
-        this.db.users.push(newUser);
-
-        this.usersJson[this.db.users.length] = newUser;
-
-        return true;
-    }
-
-    async getUser(query) {
-        return new Promise((resolve, reject) => {
-            const result = this.db.users.find(user => Object.entries(query).every(([key, value]) => user[key] === value));
-
-            resolve(result);
-        })
     }
 
     imageUrl(fileName) {
-        return `${this.dbUrl}${fileName}`
+        const userImageUrl = getConfig("USER_IMAGE_URL");
+
+        return `${userImageUrl}${fileName}`
     }
 
-    addTransaction(data) {
-        data.id = this.getTableNextId('transactions');
-        this.db.transactions.push(data);
+    async apiRequest(method, params, body=null, redirectOnErr=true) {
+        const apiUrl = getConfig('API_URL');
+
+        try {
+            const apiFullUrl = `${apiUrl}${params}`;
+            let requestParams = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            };
+            
+            if (body) {
+                requestParams['body'] = JSON.stringify(body);
+            }
+
+            const res = await fetch(
+                apiFullUrl,
+                requestParams
+            )
+
+            const result = await res.json();
+
+            return result;
+        }
+        catch (e) {
+            if (redirectOnErr)
+                window.location.href = '/';
+
+            // return {status: false, message:e.message};
+        }
     }
 
-    addPot(data) {
-        data.id = this.getTableNextId('pots');
-        this.db.pots.push(data);
+    async verifyDbConnection() {
+        const apiResponse = await this.apiRequest('get', 'available', null, false)
+
+        return apiResponse;
     }
 
-    updatePot(potData) {
-        this.db.pots = this.db.pots.map(pot => {
-            if (pot.id === potData.id)
-                return potData
-            else
-                return pot
-        });
+    async getUserById(id) {
+        const apiResponse = await this.apiRequest('get', `user/get/${id}`)
+
+        return apiResponse;
     }
 
-    deletePot(potId) {
-        this.db.pots = this.db.pots.filter(pot => pot.id !== potId);
+    async login(email, password) {
+        const apiResponse = await this.apiRequest('post', `auth/login`, {email: email, password: password})
+
+        return apiResponse;
+    }
+
+    async signup(data) {
+        data.image = "default.jpg";
+
+        const apiResponse = await this.apiRequest('post', `auth/signup`, data)
+
+        return apiResponse;
+    }
+
+    async getPotsList() {
+        const apiResponse = await this.apiRequest('get', `pot/all`)
+
+        return apiResponse;
+    }
+
+    async addPot(data) {
+        delete data.id;
+
+        const apiResponse = await this.apiRequest('post', `pot/add`, data)
+
+        return apiResponse;
+    }
+
+    async updatePot(data) {
+        const apiResponse = await this.apiRequest('put', `pot/update`, data)
+
+        return apiResponse;
+    }
+
+    async deletePot(data) {
+        const apiResponse = await this.apiRequest('delete', `pot/delete`, data)
+
+        return apiResponse;
+    }
+
+    async getColorsList() {
+        const apiResponse = await this.apiRequest('get', `color/all`)
+
+        return apiResponse;
+    }
+
+    async getCategoriesList() {
+        const apiResponse = await this.apiRequest('get', `category/all`)
+
+        return apiResponse;
+    }
+
+    async getOverviewData() {
+        const apiResponse = await this.apiRequest('get', `overview/all`)
+
+        return apiResponse;
+    }
+
+    async addTransaction(data) {
+        delete data.id;
+
+        const apiResponse = await this.apiRequest('post', `transaction/add`, data)
+
+        return apiResponse;
+    }
+
+    async getPageTransactions(catId, sortId, page, limit) {
+        const apiResponse = await this.apiRequest('get', `transaction/get/${catId}/${sortId}/${page}/${limit}`)
+
+        return apiResponse;
+    }
+
+    async getTransactionsPerCategory() {
+        const apiResponse = await this.apiRequest('get', `transaction/category-count`)
+
+        return apiResponse;
     }
 }
 

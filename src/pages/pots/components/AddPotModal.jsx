@@ -7,10 +7,9 @@ import Modal from '../../../components/Modal'
 import { DB } from "../../../utils/DB";
 import { PotFormDataContext } from "../context/PotFormDataProvider";
 
-function AddPotModal( {closeHandler, saveHandler } ) {
+function AddPotModal( {closeHandler, saveHandler, colors } ) {
     const { updatePotData, getFormData, resetFormData } = useContext(PotFormDataContext);
     
-    const colors = DB.getTable("colors");
     const colorsOptions = colors.map(color => {
         return (
             {

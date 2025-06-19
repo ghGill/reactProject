@@ -28,7 +28,7 @@ function Pagination({ currentPage, totalPages, onClick, mediaType }) {
                             className={`btn number ${n === currentPage ? 'selected' : ''} ${mediaType}`}
                             onClick = { () => { btnClick(n); } }
                         >
-                            {n}
+                            <div>{n}</div>
                         </div>)
                     )
                 }

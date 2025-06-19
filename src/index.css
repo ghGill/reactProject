@@ -16,7 +16,8 @@ body {
   min-width: 100vw;
   margin: 0;
   padding:0;
-  overflow: hidden; 
+  /* overflow: hidden;  */
+  overflow-x: hidden; 
   display: block;
   place-items: center;
   background-color: #b8b097;

@@ -20,7 +20,9 @@
 .pagination .btn.number {
     width: 24px;
     height: 24px;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: anchor-center;
 }
 
 .pagination .btn.number:not(.mobile) {

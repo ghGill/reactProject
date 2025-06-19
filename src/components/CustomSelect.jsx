@@ -81,10 +81,17 @@ export function CustomIconSelect({ selectData }) {
         }
     }
 
-    function clickOption(event) {
-        selectData.onChange(event);
-        
-        setOptions([]);
+    function onChange(event) {
+        updateParent(event.target.value);
+    }
+
+    function updateParent(val) {
+        const { updateCallback } = selectData;
+
+        if ('params' in updateCallback)
+            updateCallback.func(updateCallback.params, val);
+        else
+            updateCallback.func(val);
     }
 
     return (
@@ -98,7 +105,7 @@ export function CustomIconSelect({ selectData }) {
                             key={option.text} 
                             value={option.value || option.text}
                             className={`custom-option ${(option.value === parseInt(selectData.selected) ? 'selected' : '')}`} 
-                            onClick={(e) => { clickOption(e) }}
+                            onClick={ onChange }
                             style = { option.style }
                         >
                             {option.text}

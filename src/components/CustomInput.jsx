@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './CustomInput.css'
 
 function CustomInput( { inputData } ) {
@@ -8,6 +8,10 @@ function CustomInput( { inputData } ) {
     const oneRowClass = inputData.onerow ? 'one-row' : '';
 
     const iconClass = inputData.icon ? 'with-icon' : ''
+
+    useEffect(() => {
+        setValue(inputData.value);
+    }, [inputData.value]);
 
     function onChange(event) {
         setValue(event.target.value);

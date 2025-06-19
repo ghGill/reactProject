@@ -22,7 +22,7 @@ export function Modal( { children, closeCallback } ) {
     }
 
     return (
-        <div className="modal">
+        <div className="modal" style={{height:document.documentElement.scrollHeight, top:window.scrollY}}>
             <div className='content'>
                 <div className='close'>
                     <i className="fa fa-close" onClick={ closeModal }></i>

@@ -5,22 +5,25 @@ import {Link} from 'wouter'
 import { DB } from '../../utils/DB'
 import { MediaResolution } from '../../contexts/MediaResolution'
 
-function Overview({ changePageHandler }) {
+function Overview({ pageIsReady }) {
     const [users, setUsers] = useState([]);
     const { isDesktop, isMobile } = useContext(MediaResolution);
 
-    useEffect(() => {
-        // join data and display on screen from transactions table
-        const transactionsTable = DB.getTable('overview_transactions');
-        const dataTable = transactionsTable.map(tran => {
+    async function getOverviewData() {
+        let transactionsTable = await DB.getOverviewData();
+
+        const dataTable = transactionsTable.overviews.map(tran => {
             return {
                 ...tran, 
-                ...DB.getUsersJson()[tran.user_id],
                 "date":new Date(new Date(tran['date']).getTime()).toLocaleString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})
             }
         })
         
         setUsers(dataTable);
+    }
+
+    useEffect(() => {
+        getOverviewData();
     }, [])
 
     function Card({ active, title, amount }) {
@@ -44,7 +47,12 @@ function Overview({ changePageHandler }) {
         )
     }
 
-    function TransactionUser({userData}) {
+    function TransactionUser({userData, isLast}) {
+        useEffect(() => {
+            if (isLast)
+                pageIsReady();
+        }, [])
+
         const amountSign = userData.amount > 0 ? '+' : '-'; 
         
         return (
@@ -97,80 +105,82 @@ function Overview({ changePageHandler }) {
     }
 
     return (
-        <div className='overview-page'>
-            <div className={`top-cards ${isMobile ? 'mobile' : ''}`}>
-                <Card active="true" title="Current Balance" amount="$4,836.60" />
-                <Card active="false"  title="Income" amount="$3,814.25"/>
-                <Card active = "false"  title="Expenses" amount="$1,700.50" />
-            </div>
-
-            <div className={`content ${!isDesktop ? 'portrait' : ''}`}>
-                <div className={`left ${!isDesktop ? 'portrait' : ''}`}>
-                    <OverviewCard id='pots' title='Pots' linkText='See Details' route='/pots' >
-                        <div className='data'>
-                            <div className="total-saved">
-                                <div className='icon'>
-                                    <i className='fa fa-money'></i>
-                                </div>
-                                <div className='info'>
-                                    <div className='title'>Total Saved</div>
-                                    <div className='value'>$850</div>
-                                </div>
-                            </div>
-
-                            <div className='categories'>
-                                <PotsCard title='Savings' amount='$159' colorClass='color1' />
-                                <PotsCard title='Gift' amount='$40' colorClass='color2' />
-                                <PotsCard title='Concert Ticket' amount='$110' colorClass='color3' />
-                                <PotsCard title='New Laptop' amount='$10' colorClass='color4' />
-                            </div>
-                        </div>
-                    </OverviewCard>
-
-                    <OverviewCard id='transactions' title='Transactions' linkText='View All' route='/transactions' >
-                        <div className='users-list'>
-                            {
-                                users.map((user) => {
-                                    return (
-                                        <TransactionUser key={user.id} userData={user} />
-                                    )
-                                })
-                            }
-                        </div>
-                    </OverviewCard>
+        <>
+            <div className='overview-page'>
+                <div className={`top-cards ${isMobile ? 'mobile' : ''}`}>
+                    <Card active="true" title="Current Balance" amount="$4,836.60" />
+                    <Card active="false"  title="Income" amount="$3,814.25"/>
+                    <Card active = "false"  title="Expenses" amount="$1,700.50" />
                 </div>
 
-                <div className="right">
-                    <OverviewCard id='budgets' title='Budgets' linkText='See Details' route='/budgets' >
-                        <div className='data'>
-                            <div className="chart">
-                                <img src={chart}></img>
-                                <div className='info'>
-                                    <div className='amount'>$338</div>
-                                    <div>of $975 limit</div>
+                <div className={`content ${!isDesktop ? 'portrait' : ''}`}>
+                    <div className={`left ${!isDesktop ? 'portrait' : ''}`}>
+                        <OverviewCard id='pots' title='Pots' linkText='See Details' route='/pots' >
+                            <div className='data'>
+                                <div className="total-saved">
+                                    <div className='icon'>
+                                        <i className='fa fa-money'></i>
+                                    </div>
+                                    <div className='info'>
+                                        <div className='title'>Total Saved</div>
+                                        <div className='value'>$850</div>
+                                    </div>
+                                </div>
+
+                                <div className='categories'>
+                                    <PotsCard title='Savings' amount='$159' colorClass='color1' />
+                                    <PotsCard title='Gift' amount='$40' colorClass='color2' />
+                                    <PotsCard title='Concert Ticket' amount='$110' colorClass='color3' />
+                                    <PotsCard title='New Laptop' amount='$10' colorClass='color4' />
                                 </div>
                             </div>
-                            <div className="info">
-                                <BudgetCard title='Entertainment' amount='$50' color='color1' />
-                                <BudgetCard title='Bills' amount='$740.00' color='color2' />
-                                <BudgetCard title='Dining Out' amount='$75.00' color='color3' />
-                                <BudgetCard title='Personal Care' amount='$100.00' color='color4' />
+                        </OverviewCard>
+
+                        <OverviewCard id='transactions' title='Transactions' linkText='View All' route='/transactions' >
+                            <div className='users-list'>
+                                {
+                                    users.map((user, index) => {
+                                        return (
+                                            <TransactionUser key={user.id} userData={user} isLast={ index === users.length-1 } />
+                                        )
+                                    })
+                                }
                             </div>
-                        </div>
-                    </OverviewCard>
+                        </OverviewCard>
+                    </div>
 
-                    <OverviewCard id='bills' title='Recurring Bills' linkText='See Details' route='/recurring-bills' >
-                        <div className='cards'>
-                            <BillsCard title='Paid Bills' amount='$190.00' color='color1' />
-                            <BillsCard title='Total Upcoming' amount='$194.98' color='color2' />
-                            <BillsCard title='Due Soon' amount='$59.98' color='color3' />
-                        </div>
-                    </OverviewCard>
+                    <div className="right">
+                        <OverviewCard id='budgets' title='Budgets' linkText='See Details' route='/budgets' >
+                            <div className='data'>
+                                <div className="chart">
+                                    <img src={chart}></img>
+                                    <div className='info'>
+                                        <div className='amount'>$338</div>
+                                        <div>of $975 limit</div>
+                                    </div>
+                                </div>
+                                <div className="info">
+                                    <BudgetCard title='Entertainment' amount='$50' color='color1' />
+                                    <BudgetCard title='Bills' amount='$740.00' color='color2' />
+                                    <BudgetCard title='Dining Out' amount='$75.00' color='color3' />
+                                    <BudgetCard title='Personal Care' amount='$100.00' color='color4' />
+                                </div>
+                            </div>
+                        </OverviewCard>
+
+                        <OverviewCard id='bills' title='Recurring Bills' linkText='See Details' route='/recurring-bills' >
+                            <div className='cards'>
+                                <BillsCard title='Paid Bills' amount='$190.00' color='color1' />
+                                <BillsCard title='Total Upcoming' amount='$194.98' color='color2' />
+                                <BillsCard title='Due Soon' amount='$59.98' color='color3' />
+                            </div>
+                        </OverviewCard>
+                    </div>
                 </div>
-            </div>
 
-            <div className='bottom-gap'></div>
-        </div>
+                <div className='bottom-gap'></div>
+            </div>
+        </>
     )
 }
 

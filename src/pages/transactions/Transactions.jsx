@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import './Transactions.css'
 import { DB } from '../../utils/DB';
 import { MediaResolution } from '../../contexts/MediaResolution';
@@ -9,8 +9,11 @@ import { AuthContext } from '../../contexts/AuthContext';
 import TransactionRow from './components/TransactionRow';
 import Pagination from './components/Pagination';
 import AddTransactionModal from './components/AddTransactionModal'
+import Loader from '../../components/Loader';
 
-function Transactions() {
+function Transactions( { pageIsReady }) {
+    const ROWS_PER_PAGE = 10;
+
     const sortByOptions = [
         {
             "text":'Latest',
@@ -38,151 +41,145 @@ function Transactions() {
         }
     ];
     
-    const categories = DB.getTable('categories');
     const allOption = {"value":999, "text": "All Transactions"};
-    const modalOptions = categories.map(cat => { return { "value":cat.id, "text":cat.name}});
-    const categoryOptions = [allOption, ...categories.map(cat => { return {"value": cat.id, "text":cat.name}})];
+    const [modalOptions, setModalOptions] = useState([]);
+    const [categoryOptions, setCategoryOptions] = useState([allOption]);
 
-    const [pageTransactions, setPageTransactions] = useState([]);
+    const [unFilteredTransactions, setUnFilteredTransactions] = useState([]);
     const [viewTransactions, setViewTransactions] = useState([]);
     const [openModal, setOpenModal] = useState(false);
+    const [displayLoader, setDisplayLoader] = useState(false);
 
-    const [sortKey, setSortKey] = useState('');
-    const [categoryKey, setCategoryKey] = useState('');
+    const [sortKey, setSortKey] = useState(1);
+    const [categoryKey, setCategoryKey] = useState(allOption.value);
     const [searchText, setSearchText] = useState('');
     
     const { isMobile, mediaType } = useContext(MediaResolution);
 
-    const context = useContext(AuthContext);
+    const { getUser } = useContext(AuthContext);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
 
-    useEffect(() => {
-        setSortKey(sortByOptions[0].value);
-        setCategoryKey(categoryOptions[0].value);
-    }, [])
+    const [transactionsPerCategory, setTransactionsPerCategory] = useState({});
+    const ignoreUpdatePagination = useRef(false);
 
-    useEffect(() => {
-        const transactions = getCurrentPageTransaction();
+    // read all categories from DB
+    async function getCategoriesList() {
+        const result = await DB.getCategoriesList();
 
-        setPageTransactions(transactions);
-    }, [currentPage])
+        setModalOptions(result.categories.map(cat => { return { "value":cat.id, "text":cat.name}}));
+        setCategoryOptions([allOption, ...result.categories.map(cat => { return {"value": cat.id, "text":cat.name}})]);
+    }
 
-    function getCurrentPageTransaction() {
-        const rowsPerPage = 10;
+    // ========================== LOADER ======================================
 
-        const transactionsTable = DB.getTable('transactions');
-        let pages =  Math.floor(transactionsTable.length / rowsPerPage);
-        if ((pages * rowsPerPage) < transactionsTable.length)
-            pages++;
-        setTotalPages(pages);
+    function showLoader() {
+        if (displayLoader)
+            return;
 
-        const dataTable = transactionsTable.map(tran => {
-            return addTransactionExtraData(tran)
+        setDisplayLoader(true);
+    }
+
+    function hideLoader() {
+        setDisplayLoader(false);
+    }
+    
+    // ========================== TRANSACTION PER CATEGORY ======================================
+
+    async function getTransactionsPerCategory() {
+        const result = await DB.getTransactionsPerCategory();
+
+        let obj = {};
+        let totalRecords = 0;
+        result.transactions.forEach(tran => {
+            obj[tran.cat_id] = tran.total;
+            totalRecords += Number(tran.total);
         })
 
-        const from = (currentPage - 1) * rowsPerPage;
+        obj[allOption.value] = totalRecords;
 
-        const records = dataTable.slice(from, from + (rowsPerPage));
-
-        return records;
+        setTransactionsPerCategory({...obj});
     }
 
-    function addTransactionExtraData(data) {
-        return {
-            ...DB.getUsersJson()[data.user_id],
-            ...data, 
-            "timestamp":new Date(data.date).getTime(),
-            "date":new Date(new Date(data.date).getTime()).toLocaleString('en-US', {year: 'numeric', month: 'short', day: 'numeric'}),
-            "category": DB.getCategoriesJson()[data.category_id].name
+    function updateCategoryTransactions(catId, delta) {
+        let obj = {...transactionsPerCategory};
+
+        let val = Number(obj[catId]) + delta;
+        obj[catId] = String(val);
+
+        val = Number(obj[allOption.value]) + delta;
+        obj[allOption.value] = String(val);
+
+        setTransactionsPerCategory({...obj});
+    }
+
+    useEffect(() => {
+        if(Object.keys(transactionsPerCategory).length == 0)
+            return;
+
+        if (!ignoreUpdatePagination.current ) {
+            updatePagination();
+            ignoreUpdatePagination.current = true;
         }
+        else
+            updatePagination(false);
+
+    }, [transactionsPerCategory])
+
+    // ========================== PAGINATION ======================================
+
+    function updatePagination(resetPage = true) {
+        if (!transactionsPerCategory)
+            return;
+
+        setTotalPages(Math.ceil(transactionsPerCategory[categoryKey] / ROWS_PER_PAGE));
+
+        if (resetPage)
+            setCurrentPage(1);
     }
+
+    useEffect(() => {
+       getPageTransactions();
+    }, [currentPage])
 
     // ========================== SEARCH ======================================
 
-    function searchTransactions(transactions) {
+    function searchTransactions() {
+        const transactions = [...unFilteredTransactions];
+
         if (searchText)
-            transactions = transactions.filter(tran => tran.name.toLowerCase().includes(searchText.toLowerCase()));
-
-        return transactions;
-    }
-
-    // ========================== SORT ======================================
-
-    function changedSortKey(event) {
-        setSortKey(event.target.value);
-    }
-
-    function sortTransactions(transactions) {
-        switch (parseInt(sortKey)) {
-            case 1:
-                transactions.sort((a,b) => b.timestamp - a.timestamp );
-                break;
-
-            case 2:
-                transactions.sort((a,b) => a.timestamp - b.timestamp );
-                break;
-
-            case 3:
-                transactions.sort((a,b) => a.name.localeCompare(b.name) );
-                break;
-
-            case 4:
-                transactions.sort((a,b) => b.name.localeCompare(a.name) );
-                break;
-
-            case 5:
-                transactions.sort((a,b) => b.amount - a.amount );
-                break;
-
-            case 6:
-                transactions.sort((a,b) => a.amount - b.amount );
-                break;
-
-            default:
-                return [];
-        }
-
-        return transactions;
-    }
-
-// ========================== CATEGORY ======================================
-
-    function changedCategoryKey(event) {
-        setCategoryKey(event.target.value);
-    }
-
-    function filterByCategory(transactions) {
-        switch (parseInt(categoryKey)) {
-            case 999:  // All transactions
-                break;
-
-            default:
-                transactions = transactions.filter(tran => tran.category_id === categoryKey);
-                break;
-        }
-
-
-        return transactions;
-    }
-
-    // ========================= REFRESH =======================================
-
-    function refresh() {
-        let transactions = pageTransactions.map(transaction => { return {...transaction} });
-        transactions = filterByCategory(transactions);
-        transactions = searchTransactions(transactions);
-        transactions = sortTransactions(transactions);
-
-        setViewTransactions(transactions);
+            setViewTransactions(transactions.filter(tran => tran.name.toLowerCase().includes(searchText.toLowerCase())));
+        else
+            setViewTransactions(transactions);
     }
 
     useEffect(() => {
-        refresh();
-    }, [pageTransactions, sortKey, categoryKey, searchText])
+        searchTransactions();
+    }, [searchText])
 
-    // ================= MODAL ==============================
+    // ========================== SORT ======================================
+
+    function changedSortKey(value) {
+        setSortKey(value);
+    }
+
+    useEffect(() => {
+       getPageTransactions(); 
+    }, [sortKey])
+
+// ========================== CATEGORY ======================================
+
+    function changedCategoryKey(value) {
+        setCategoryKey(value);
+    }
+
+    useEffect(() => {
+       getPageTransactions(); 
+       updatePagination();
+    }, [categoryKey])
+
+    // ================= ADD TRANSACTION MODAL ==============================
 
     function openAddTransactionModal() {
         setOpenModal(true)
@@ -192,23 +189,58 @@ function Transactions() {
         setOpenModal(false);
     }
 
-    function saveNewTransaction(data) {
-        data.user_id = context.user.id;
+    async function saveNewTransaction(data) {
+        showLoader();
+
+        data.user_id = getUser('id');
         data.date = new Date().toISOString().split('T')[0];
 
-        DB.addTransaction(data);
+        await DB.addTransaction(data);
 
-        const newTransaction = addTransactionExtraData(data);
+        updateCategoryTransactions(data.category_id, 1);
 
-        let updatedTransactions = pageTransactions.map(transaction => { return {...transaction} });
-        updatedTransactions.push(newTransaction);
-        setPageTransactions(updatedTransactions);
+        getPageTransactions();
 
         closeModal();
+
+        hideLoader();
     }
+
+    // ================= MAIN ==============================
+
+    async function getPageTransactions() {
+        showLoader();
+
+        const result = await DB.getPageTransactions(categoryKey, sortKey, currentPage, ROWS_PER_PAGE);
+
+        setUnFilteredTransactions(result.transactions);
+        setViewTransactions(result.transactions);
+        setSearchText('');
+
+        hideLoader();
+    }
+
+    useEffect(() => {
+        getTransactionsPerCategory()
+            .then(result => {
+                getPageTransactions()
+                    .then(result => {
+                        getCategoriesList()
+                            .then(result => {
+                                pageIsReady();
+                            })
+                    })
+            })
+    }, [])
+
+    // ================= HTML ==============================
 
     return (
         <div className="transactions-active-area">
+            {
+                displayLoader && <Loader />
+            }
+
             {
                 openModal &&
                 <AddTransactionModal 
@@ -242,7 +274,7 @@ function Transactions() {
                                     {
                                         options: sortByOptions,
                                         value: sortKey, 
-                                        onChange: changedSortKey,
+                                        updateCallback: {"func": ((val) => { changedSortKey(val) })},
                                         icon: "fa fa-bars",
                                         selected: sortKey
                                     }
@@ -254,7 +286,7 @@ function Transactions() {
                                     {
                                         options: categoryOptions,
                                         value: categoryKey,
-                                        onChange: changedCategoryKey,
+                                        updateCallback: {"func": ((val) => { changedCategoryKey(val) })},
                                         icon: "fa fa-filter",
                                         selected: categoryKey
                                     }
@@ -269,7 +301,7 @@ function Transactions() {
                                     {
                                         name: "sortby",
                                         title: "Sort by",
-                                        updateCallback: {"func": ((val) => { setSortKey(val) })},
+                                        updateCallback: {"func": ((val) => { changedSortKey(val) })},
                                         options: sortByOptions,
                                         value: sortKey,
                                         onerow:true
@@ -282,7 +314,7 @@ function Transactions() {
                                     {
                                         name: "category",
                                         title: "Category",
-                                        updateCallback: {"func": ((val) => { setCategoryKey(val) })},
+                                        updateCallback: {"func": ((val) => { changedCategoryKey(val) })},
                                         options: categoryOptions,
                                         value: categoryKey,
                                         onerow: true

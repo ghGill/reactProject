@@ -8,7 +8,7 @@ function Sidebar({ route }) {
     const [sidebarState, setSidebarState] = useState("open");
     const [, navigate] = useLocation();
     const {isDesktop, isMobile } = useContext(MediaResolution);
-    const context = useContext(AuthContext);
+    const { logout } = useContext(AuthContext);
 
     const pagesInfo = {
         sidebar_title: "finance",
@@ -42,7 +42,7 @@ function Sidebar({ route }) {
                 routes:["/login"],
                 title:"Logout",
                 icon:"sign-out",
-                beforeNevigate: context.logout
+                beforeNevigate: logout
             },
         ],
     }

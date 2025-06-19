@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useLocation, Link } from 'wouter'
 
 import CustomInput from '../components/CustomInput';
@@ -7,16 +7,30 @@ import './Login.css'
 import { DB } from '../utils/DB';
 import { AuthContext } from '../contexts/AuthContext';
 import { AUTH_COOKIE_NAME, createCookie } from '../utils/cookies.jsx'
+import Loader from '../components/Loader.jsx';
 
-
-function Login({ changePageHandler }) {
+function Login( { pageIsReady } ) {
     const emptyMsg = '\u00A0';
 
     const [, navigate] = useLocation();
     const [form, setForm] = useState({email:"", password:""});
     const [errMsg, setErrMsg] = useState(emptyMsg);
-    const context = useContext(AuthContext)
+    const authContext = useContext(AuthContext)
+    const [displayLoader, setDisplayLoader] = useState(false);
 
+    // ========================== LOADER ======================================
+
+    function showLoader() {
+        if (displayLoader)
+            return;
+
+        setDisplayLoader(true);
+    }
+
+    function hideLoader() {
+        setDisplayLoader(false);
+    }
+    
     function updateLoginData(prop, val) {
         setErrMsg(emptyMsg)
 
@@ -24,80 +38,94 @@ function Login({ changePageHandler }) {
     }
 
     async function login() {
+        showLoader();
+
         event.preventDefault();
 
-        const user = await DB.getUser({"email":form.email, "password":form.password});
+        const result = await DB.login(form.email, form.password);
 
-        if (user === undefined) {
+        if (!result.user) {
             setErrMsg("Invalid email or password.")
+            hideLoader();
         }
         else {
-            createCookie(AUTH_COOKIE_NAME, user.id);
+            createCookie(AUTH_COOKIE_NAME, result.user.id);
 
-            context.setUser(user);
+            authContext.login(result.user);
+
             navigate("/");
         }
     }
 
+    useEffect(() => {
+        pageIsReady();
+    }, [])
+
     return (
-      <form className="form" onSubmit={login}>
-        <h1 className="title">Login</h1>
+        <>
+            {
+                displayLoader && <Loader />
+            }        
 
-        <div className="content">
-            <div className="element">
-                <CustomInput 
-                    inputData= {
-                        {
-                            name: "email" ,
-                            type: "email",
-                            title: "Email",
-                            value: form.email,
-                            updateCallback: {"params":'email', "func":updateLoginData},
-                            required:true
-                        }
-                    }
-                />
-            </div>
+            <form className="form" onSubmit={login}>
+                <h1 className="title">Login</h1>
 
-            <div className="element">
-                <CustomInput 
-                    inputData= {
-                        {
-                            name: "password",
-                            type: "password",
-                            title: "Password",
-                            value: form.password,
-                            updateCallback: {"params":'password', "func":updateLoginData},
-                            required: true
-                        }
-                    }
-                />
-            </div>
+                <div className="content">
+                    <div className="element">
+                        <CustomInput 
+                            inputData= {
+                                {
+                                    name: "email" ,
+                                    type: "email",
+                                    title: "Email",
+                                    value: form.email,
+                                    updateCallback: {"params":'email', "func":updateLoginData},
+                                    required:true
+                                }
+                            }
+                        />
+                    </div>
 
-            
-            <div className="element">
-                <CustomButton 
-                    btnData = {
-                        {
-                            name: "login" ,
-                            text: "Login",
-                            type: "submit" ,
-                            errMsg: errMsg
-                        }
-                    }
-                />
-            </div>
+                    <div className="element">
+                        <CustomInput 
+                            inputData= {
+                                {
+                                    name: "password",
+                                    type: "password",
+                                    title: "Password",
+                                    value: form.password,
+                                    updateCallback: {"params":'password', "func":updateLoginData},
+                                    required: true
+                                }
+                            }
+                        />
+                    </div>
 
-            <div className="footer">
-                <div>
-                    Need to create an acount?
+                    
+                    <div className="element">
+                        <CustomButton 
+                            btnData = {
+                                {
+                                    name: "login" ,
+                                    text: "Login",
+                                    type: "submit" ,
+                                    errMsg: errMsg
+                                }
+                            }
+                        />
+                    </div>
+
+                    <div className="footer">
+                        <div>
+                            Need to create an acount?
+                        </div>
+                        <div>
+                            <b><Link href="/signup" >Sign Up</Link></b>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <b><Link href="/signup" >Sign Up</Link></b>
-                </div>
-            </div>
-        </div>
-      </form>
+            </form>
+        </>
     )
 }
 

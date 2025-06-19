@@ -8,19 +8,18 @@ import AddPotModal from './components/AddPotModal';
 import PotFormDataProvider, { PotFormDataContext } from './context/PotFormDataProvider';
 import ConfirmModal from '../../components/ConfirmModal';
 import PotTransactionModal from './components/PotTransactionModal';
+import Loader from '../../components/Loader';
 
 const PotCardContext = createContext(null);
 const usePotCardContext = () => useContext(PotCardContext)
 
 function PotCardHeader() {
-    const { data, refreshPots } = usePotCardContext();
+    const { index, data, pots, setPots, colors, showLoader, hideLoader } = usePotCardContext();
     const { editPotData } = useContext(PotFormDataContext);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const [openEditModal, setOpenEditModal] = useState(false);
 
-    function dotsMenuClick(event) {
-        const op = event.target.value;
-
+    function dotsMenuClick(op) {
         editPotData(data);
 
         switch (op) {
@@ -34,24 +33,36 @@ function PotCardHeader() {
         }
     }
 
-    function updatePot(data) {
-        const colorsJson = DB.getColorsJson();
+    async function updatePot(data) {
+        showLoader();
 
-        data.color = colorsJson[data.color_id].name
+        const color = colors.find(clr => clr.id === parseInt(data.color_id));
+        data.color = color.name;
 
-        DB.updatePot(data);
+        const pot = await DB.updatePot(data);
 
-        refreshPots();
+        const newpots = [...pots];
+        newpots[index] = {...data};
+
+        setPots(newpots);
 
         setOpenEditModal(false);
+
+        hideLoader();
     }
 
-    function removePot() {
-        DB.deletePot(data.id);
+    async function removePot() {
+        showLoader();
+
+        await DB.deletePot(data);
+
+        const newPots = pots.filter(pot => pot.id !== data.id);
+
+        setPots(newPots);
 
         setOpenDeleteModal(false);
 
-        refreshPots();
+        hideLoader();
     }
 
     return (
@@ -61,6 +72,7 @@ function PotCardHeader() {
                 <AddPotModal 
                     closeHandler = { () => {setOpenEditModal(false)} }
                     saveHandler = { updatePot }
+                    colors = { colors }
                 />
             }
 
@@ -109,7 +121,7 @@ function PotCardHeader() {
                                         style:{"color":"red", "padding":"8px 8px 0", "fontSize": "16px"}
                                     }
                                 ],
-                                onChange: dotsMenuClick,
+                                updateCallback: {"func": ((val) => { dotsMenuClick(val) })},
                                 icon: "fa fa-ellipsis-h" 
                             }
                         }
@@ -153,7 +165,7 @@ function PotCardFooter() {
     const [modalTitle, setModalTitle] = useState('');
     const [modalSubTitle, setModalSubTitle] = useState('');
     const [modalOperationTitle, setModalOperationTitle] = useState('');
-    const { data, refreshPots } = usePotCardContext();
+    const { index, data, pots, setPots, showLoader, hideLoader } = usePotCardContext();
 
 
     const buttonStyle = {"padding": isMobile ? null : "16px"};
@@ -176,7 +188,9 @@ function PotCardFooter() {
         setOpenTransactionModal(true);
     }
 
-    function saveTransaction(value) {
+    async function saveTransaction(value) {
+        showLoader();
+
         const currentSaved = parseInt(data.saved);
         const transactionValue = parseInt(value);
 
@@ -196,11 +210,16 @@ function PotCardFooter() {
 
         data.saved = newValue;
 
-        DB.updatePot(data);
+        await DB.updatePot(data);
+
+        const newpots = [...pots];
+        newpots[index] = {...data};
+
+        setPots(newpots);
 
         setOpenTransactionModal(false);
 
-        refreshPots();
+        hideLoader();
     }
 
     return (
@@ -250,13 +269,13 @@ function PotCardFooter() {
     )
 }
 
-function PotCard( { data, refreshPots } ) {
+function PotCard( { index, data, pots, setPots, colors, showLoader, hideLoader } ) {
     const { mediaType } = useContext(MediaResolution);
 
     return (
         <div className={`pots-card ${ mediaType }`}>
             <>
-                <PotCardContext.Provider value = {{ data, refreshPots }}>
+                <PotCardContext.Provider value = {{ index, data, pots, setPots, colors, showLoader, hideLoader }}>
                     <PotCardHeader />
                     <PotCardProgress />
                     <PotCardFooter />
@@ -266,22 +285,27 @@ function PotCard( { data, refreshPots } ) {
     )
 }
 
-function PageHeader( { refreshPots }) {
+function PageHeader( { pots, setPots, colors, showLoader, hideLoader }) {
     const { resetFormData, getFormData } = useContext(PotFormDataContext);
     const [openAddModal, setOpenAddModal] = useState(false);
 
-    function savePot() {
-        const colorsJson = DB.getColorsJson();
+    async function savePot() {
+        showLoader();
 
         let data = getFormData();
         data.saved = 0;
-        data.color = colorsJson[data.color_id].name;
 
-        DB.addPot(data);
-
-        refreshPots();
+        const color = colors.find(clr => clr.id === parseInt(data.color_id));
+        data.color = color.name;
+        
+        const result = await DB.addPot(data);
+        data.id = result?.pot?.id || 0;
+        
+        setPots([...pots, data]);
 
         setOpenAddModal(false);
+
+        hideLoader();
     }
 
     function addNewPot() {
@@ -296,6 +320,7 @@ function PageHeader( { refreshPots }) {
                 <AddPotModal 
                     closeHandler = { () => {setOpenAddModal(false)} }
                     saveHandler = { savePot }
+                    colors = { colors }
                 />
             }
 
@@ -315,34 +340,50 @@ function PageHeader( { refreshPots }) {
     )
 }
 
-function PagePots() {
-    const [pots, setPots] = useState([]);
+function PagePots({ dbPots, colors }) {
+    const [pots, setPots] = useState(dbPots);
+    const [displayLoader, setDisplayLoader] = useState(false);
 
-    useEffect(() => {
-        refreshPots();
-    }, [])
+    // ========================== LOADER ======================================
 
-    function refreshPots() {
-        const colorsJson = DB.getColorsJson();
-        const potsTable = DB.getTable('pots').map(color => {
-            return { ...color, color:colorsJson[color.color_id].name }
-        });
+    function showLoader() {
+        if (displayLoader)
+            return;
 
-        setPots(potsTable);
+        setDisplayLoader(true);
+    }
+
+    function hideLoader() {
+        setDisplayLoader(false);
     }
 
     return (
         <>
-            <PageHeader refreshPots={ refreshPots }/>
+            {
+                displayLoader && <Loader />
+            }
+
+            <PageHeader 
+                colors={ colors } 
+                pots = { pots } 
+                setPots={ setPots }
+                showLoader = { showLoader }
+                hideLoader = { hideLoader }
+            />
 
             <div className='pots-cards-wrapper'>
                 {
-                    pots.map(pot => {
+                    pots.map((pot, index) => {
                         return (
                             <PotCard 
                                 key = { pot.id }
+                                index= { index }
                                 data= { pot }
-                                refreshPots = { refreshPots }
+                                colors={ colors } 
+                                pots = { pots } 
+                                setPots={ setPots }
+                                showLoader = { showLoader }
+                                hideLoader = { hideLoader }
                             />
                         )
                     })
@@ -352,13 +393,35 @@ function PagePots() {
     )
 }
 
-function Pots() {
+function Pots( { pageIsReady }) {
+    const [dbPots, setDbPots] = useState([]);
+    const [colors, setColors] = useState([]);
+
+    async function getPotsList() {
+        let result = await DB.getPotsList();
+        setDbPots(result.pots);
+
+        result = await DB.getColorsList();
+        setColors(result.colors);
+
+        pageIsReady();
+    }
+
+    useEffect(() => {
+        getPotsList();
+    }, [])
+
     return (
-        <PotFormDataProvider>
-            <div className="pots-active-area">
-                <PagePots />
-            </div>
-        </PotFormDataProvider>
+        <>
+            {
+                (dbPots.length > 0) &&
+                <PotFormDataProvider>
+                    <div className="pots-active-area">
+                        <PagePots dbPots={dbPots} colors= { colors }/>
+                    </div>
+                </PotFormDataProvider>
+            }
+        </>
     )
 }
 
