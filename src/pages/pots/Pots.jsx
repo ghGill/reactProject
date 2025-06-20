@@ -132,10 +132,17 @@ function PotCardHeader() {
     )
 }
 
+export function calcSavedPercents(saved, target) {
+    if (!saved || !target)
+        return "0.00";
+
+    return ((((saved * 100) / target) * 100) / 100).toFixed(2)
+}
+
 export function PotCardProgress() {
     const { color, saved, target } = usePotCardContext().data;
 
-    const percents = ((((saved * 100) / target) * 100) / 100).toFixed(2);
+    const percents = calcSavedPercents(saved, target);
 
     return (
         <div className='data'>

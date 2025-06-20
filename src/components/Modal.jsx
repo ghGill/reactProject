@@ -1,17 +1,17 @@
 import './Modal.css'
 
-function ModalTitle( { titleData }) {
+export function ModalTitle( { titleData }) {
     return (
-        <div className='title' style={ titleData.style }>
-            {titleData.text}
+        <div className='title' style={ titleData?.style }>
+            {titleData?.text}
         </div>
     )
 }
 
-function ModalSubTitle( { subtitleData } ) {
+export function ModalSubTitle( { subtitleData } ) {
     return (
-        <div className='subtitle' style={ subtitleData.style }>
-            {subtitleData.text}
+        <div className='subtitle' style={ subtitleData?.style }>
+            {subtitleData?.text}
         </div>
     )
 }

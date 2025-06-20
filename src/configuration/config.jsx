@@ -11,7 +11,9 @@ const configuration = {
 }
 
 function getConfig(key) {
-    return configuration[import.meta.env.MODE][key.toUpperCase()]
+    const configKey = Object.keys(configuration).includes(import.meta.env.MODE) ? import.meta.env.MODE : "development";
+
+    return configuration[configKey][key.toUpperCase()]
 }
 
 export default getConfig;
