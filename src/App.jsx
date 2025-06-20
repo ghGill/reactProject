@@ -9,9 +9,10 @@ import { store } from './store/store.js'
 import { DB } from './utils/DB';
 
 function App() {
-  const [dbErrMsg] = useState('Database is not available.');
-  const [errMsg, setErrMsg] = useState('');
+  const [dbErrMsg] = useState('Server is not available.');
+  const [errMsg, setErrMsg] = useState('Connecting to server...');
   const [dbConnected, setDbConnected] = useState(false);
+  const [retries, setRetries] = useState(0);
 
   useEffect(() => {
       DB.verifyDbConnection()
@@ -22,10 +23,18 @@ function App() {
           setDbConnected(result.status);
         })
         .catch(e => {
-          setDbConnected(false);
-          setErrMsg(dbErrMsg);
+          if (retries == 5) {
+            setDbConnected(false);
+            setErrMsg(dbErrMsg);
+          }
+          else {
+            setTimeout(() => {
+              setRetries(retries+1);
+              setErrMsg(`Retry connecting to server... (${retries+1}/${5})`)
+            }, 3000)
+        }
         })
-  }, [])
+  }, [retries])
 
   return (
     <>
@@ -42,7 +51,7 @@ function App() {
       ) : 
       (
         <>
-          <h1>
+          <h1 className='err-msg'>
             {errMsg}
           </h1>
         </>
