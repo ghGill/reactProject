@@ -1,4 +1,5 @@
 import getConfig from "../configuration/config";
+import { AUTH_COOKIE_NAME, getCookie, deleteCookie, REFRESH_COOKIE_NAME, createCookie } from "../utils/cookies";
 
 class DBclass {
     constructor() {
@@ -10,16 +11,30 @@ class DBclass {
         return `${userImageUrl}${fileName}`
     }
 
-    async apiRequest(method, params, body=null, redirectOnErr=true) {
+    async apiRequest(method, params, body=null, redirectOnErr=true, useToken=true) {
         const apiUrl = getConfig('API_URL');
+
+        let headers = {
+            'Content-Type': 'application/json'
+        };
+
+        if (useToken) {
+            const accessToken = getCookie(AUTH_COOKIE_NAME);
+            headers['Authorization'] = `Bearer ${accessToken}`;
+
+            const refreshToken = getCookie(REFRESH_COOKIE_NAME);
+            headers['refresh'] = `Bearer ${refreshToken}`;
+        }
+
+        let logout = false;
+        let result = null;
 
         try {
             const apiFullUrl = `${apiUrl}${params}`;
             let requestParams = {
                 method: method,
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: headers,
+                // credentials: 'include'  // alow to send and get cookies from and to requests
             };
             
             if (body) {
@@ -30,33 +45,48 @@ class DBclass {
                 apiFullUrl,
                 requestParams
             )
+            result = await res.json();
 
-            const result = await res.json();
-
-            return result;
+            if ([400, 401].includes(res.status)) {
+                if (useToken && redirectOnErr) { // invalid token or token not exist
+                    logout = true;
+                }
+            }
+            else {
+                const resNewAccessToken = res.headers.get('x-Access-Token');
+                if (resNewAccessToken) {
+                    createCookie(AUTH_COOKIE_NAME, resNewAccessToken);
+                }
+            }
         }
         catch (e) {
             if (redirectOnErr)
-                window.location.href = '/';
-
-            // return {status: false, message:e.message};
+                logout = true;
         }
+
+        if (logout) {
+            deleteCookie(AUTH_COOKIE_NAME);
+            deleteCookie(REFRESH_COOKIE_NAME);
+            window.location.href = '/';
+        }
+        else
+            return result;
     }
 
     async verifyDbConnection() {
-        const apiResponse = await this.apiRequest('get', 'available', null, false)
+        const apiResponse = await this.apiRequest('get', 'available', null, false, false)
 
         return apiResponse;
     }
 
-    async getUserById(id) {
-        const apiResponse = await this.apiRequest('get', `user/get/${id}`)
+    async getUserByToken() {
+        const apiResponse = await this.apiRequest('get', `user/get`, null, false)
 
         return apiResponse;
     }
 
     async login(email, password) {
-        const apiResponse = await this.apiRequest('post', `auth/login`, {email: email, password: password})
+        const apiResponse = await this.apiRequest('post', `auth/login`, {email: email, password: password}, true, false);
 
         return apiResponse;
     }
@@ -64,7 +94,7 @@ class DBclass {
     async signup(data) {
         data.image = "default.jpg";
 
-        const apiResponse = await this.apiRequest('post', `auth/signup`, data)
+        const apiResponse = await this.apiRequest('post', `auth/signup`, data, true, false);
 
         return apiResponse;
     }

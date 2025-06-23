@@ -6,7 +6,7 @@ import { CustomButton } from '../components/CustomButton';
 import './Login.css'
 import { DB } from '../utils/DB';
 import { AuthContext } from '../contexts/AuthContext';
-import { AUTH_COOKIE_NAME, createCookie } from '../utils/cookies.jsx'
+import { AUTH_COOKIE_NAME, REFRESH_COOKIE_NAME, createCookie } from '../utils/cookies.jsx'
 import Loader from '../components/Loader.jsx';
 
 function Login( { pageIsReady } ) {
@@ -44,12 +44,13 @@ function Login( { pageIsReady } ) {
 
         const result = await DB.login(form.email, form.password);
 
-        if (!result.user) {
-            setErrMsg("Invalid email or password.")
+        if (!result.success) {
+            setErrMsg(result.message);
             hideLoader();
         }
         else {
-            createCookie(AUTH_COOKIE_NAME, result.user.id);
+            createCookie(AUTH_COOKIE_NAME, result.tokens.access);
+            createCookie(REFRESH_COOKIE_NAME, result.tokens.refresh);
 
             authContext.login(result.user);
 

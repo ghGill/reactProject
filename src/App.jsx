@@ -15,48 +15,52 @@ function App() {
   const [retries, setRetries] = useState(0);
 
   useEffect(() => {
-      DB.verifyDbConnection()
-        .then(result => {
-          if (!result.status)
-            setErrMsg(dbErrMsg);
-
+    DB.verifyDbConnection()
+      .then(result => {
+        if (!result.status)
+          retryConnect();
+        else
           setDbConnected(result.status);
-        })
-        .catch(e => {
-          if (retries == 5) {
-            setDbConnected(false);
-            setErrMsg(dbErrMsg);
-          }
-          else {
-            setTimeout(() => {
-              setRetries(retries+1);
-              setErrMsg(`Retry connecting to server... (${retries+1}/${5})`)
-            }, 3000)
-        }
-        })
+      })
+      .catch(e => {
+        retryConnect();
+      })
   }, [retries])
+
+  function retryConnect() {
+    if (retries == 5) {
+      setDbConnected(false);
+      setErrMsg(dbErrMsg);
+    }
+    else {
+      setTimeout(() => {
+        setRetries(retries + 1);
+        setErrMsg(`Retry connecting to server... (${retries + 1}/${5})`)
+      }, 3000)
+    }
+  }
 
   return (
     <>
-    {
-      (dbConnected === true)? 
-      (
-        <Provider store = { store }>
-          <MediaResolutionProvider>
-            <AuthContextProvider>
-              <Pages />
-            </AuthContextProvider>
-          </MediaResolutionProvider>
-        </Provider>
-      ) : 
-      (
-        <>
-          <h1 className='err-msg'>
-            {errMsg}
-          </h1>
-        </>
-      )
-    }
+      {
+        (dbConnected === true) ?
+          (
+            <Provider store={store}>
+              <MediaResolutionProvider>
+                <AuthContextProvider>
+                  <Pages />
+                </AuthContextProvider>
+              </MediaResolutionProvider>
+            </Provider>
+          ) :
+          (
+            <>
+              <h1 className='err-msg'>
+                {errMsg}
+              </h1>
+            </>
+          )
+      }
     </>
   )
 }
