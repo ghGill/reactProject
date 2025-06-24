@@ -1,13 +1,11 @@
-import { useState, useContext } from "react";
-
 import CustomInput from "../../../components/CustomInput";
 import { CustomButton } from "../../../components/CustomButton";
 import { CustomSelect } from "../../../components/CustomSelect";
 import Modal from '../../../components/Modal'
-import { PotFormDataContext } from "../context/PotFormDataProvider";
+import { usePotFormDataContext } from "../context/PotFormDataProvider";
 
 function AddPotModal( {closeHandler, saveHandler, colors } ) {
-    const { updatePotData, getFormData, resetFormData } = useContext(PotFormDataContext);
+    const { updatePotData, getFormData, resetFormData } = usePotFormDataContext();
     
     const colorsOptions = colors.map(color => {
         return (

@@ -1,14 +1,14 @@
-import { useState, useContext } from 'react'
+import { useState } from 'react'
 import { useLocation } from 'wouter'
 import './Sidebar.css'
-import { AuthContext } from '../contexts/AuthContext';
-import { MediaResolution } from '../contexts/MediaResolution';
+import { useAuthContext } from '../contexts/AuthContext';
+import { useMediaResolution } from '../contexts/MediaResolution';
 
 function Sidebar({ route }) {
     const [sidebarState, setSidebarState] = useState("open");
     const [, navigate] = useLocation();
-    const {isDesktop, isMobile } = useContext(MediaResolution);
-    const { logout } = useContext(AuthContext);
+    const {isDesktop, mediaType } = useMediaResolution();
+    const { logout } = useAuthContext();
 
     const pagesInfo = {
         sidebar_title: "finance",
@@ -57,19 +57,17 @@ function Sidebar({ route }) {
 
     return (
         <>
-            <div className={`sidebar ${sidebarState} ${!isDesktop ? 'portrait' : 'landscape'}`}>
-                <div className={`sidebar-content ${sidebarState} ${!isDesktop ? 'portrait' : 'landscape'}`}>
-                    <div className={`sidebar-title ${!isDesktop ? 'portrait' : ''}`}>
+            <div className={`sidebar ${sidebarState} ${mediaType}`}>
+                <div className={`sidebar-content ${sidebarState} ${mediaType}`}>
+                    <div className={`sidebar-title ${mediaType}`}>
                         {pagesInfo.sidebar_title}
                     </div>
 
-                    <div className={`sidebar-items-container ${!isDesktop ? 'portrait' : ''}`}>
+                    <div className={`sidebar-items-container ${mediaType}`}>
                         {
                             pagesInfo.pages.map(item => {
                                 return (
                                     <SidebarItem
-                                        isDesktop={isDesktop}
-                                        isMobile={isMobile}
                                         itemData={item}
                                         key={item.title}
                                         activeRoute={route}
@@ -92,13 +90,14 @@ function Sidebar({ route }) {
     )
 }
 
-function SidebarItem({ itemData, activeRoute, onClick, isDesktop, isMobile }) {
-    const itemClass = `sidebar-item ${itemData.routes.includes(activeRoute) ? 'active' : ''} ${isDesktop ? 'landscape' : 'portrait'}`;
+function SidebarItem({ itemData, activeRoute, onClick }) {
+    const { isMobile, mediaType } = useMediaResolution();
+
+    const itemClass = `sidebar-item ${itemData.routes.includes(activeRoute) ? 'active' : ''} ${mediaType}`;
 
     function itemClick(route) {
         let nevigateParams = {};
 
-        // check if there is afunction to run before navigate
         if (itemData.beforeNevigate) {
             nevigateParams = { replace : true };
             itemData.beforeNevigate();
@@ -109,13 +108,13 @@ function SidebarItem({ itemData, activeRoute, onClick, isDesktop, isMobile }) {
 
     return (
         <div className={`${itemClass}`} onClick={() => { itemClick(itemData.routes[0]) }}>
-            <div className={`sidebar-item-icon ${isDesktop ? 'landscape' : 'portrait'}`}>
+            <div className={`sidebar-item-icon ${mediaType}`}>
                 <i className={`fa fa-${itemData.icon}`}></i>
             </div>
 
             {
                 !isMobile &&
-                <div className={`sidebar-item-text ${isDesktop ? 'landscape' : 'portrait'}`}>
+                <div className={`sidebar-item-text ${mediaType}`}>
                     <div>{itemData.title}</div>
                 </div>
             }

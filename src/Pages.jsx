@@ -1,7 +1,7 @@
-import { useContext, Suspense, lazy, useState, useRef, useEffect } from 'react'
+import { Suspense, lazy, useState, useEffect } from 'react'
 import { useLocation } from "wouter";
 import PageLoader from './components/PageLoader';
-import { AuthContext } from './contexts/AuthContext'
+import { useAuthContext } from './contexts/AuthContext'
 
 const SidebarLayout = lazy(() => import('./pages/layout/SidebarLayout'))
 const LogoLayout = lazy(() => import('./pages/layout/LogoLayout'))
@@ -13,9 +13,8 @@ const Transactions = lazy(() => import('./pages/transactions/Transactions'))
 const UnderConstruction = lazy(() => import('./pages/UnderConstruction'))
 
 function Pages() {
-    const { isUserLoggedIn } = useContext(AuthContext);
+    const { isUserLoggedIn } = useAuthContext();
     const [pageIsLoading, setPageIsLoading] = useState(true);
-    const [route, setRoute] = useState('');
 
     const [location] = useLocation();
 
@@ -23,12 +22,29 @@ function Pages() {
         setPageIsLoading(true);
     }, [location])
 
+    const pageIsReady = (() => { 
+        setTimeout(() => {
+            setPageIsLoading(false);
+        }, 1000)
+    });
+
+    function LogoPage(Component) {
+        return (
+            <LogoLayout>
+                <Component pageIsReady={ pageIsReady } />
+            </LogoLayout>
+        )
+    }
+
+    function SidebarPage(Component, route, title) {
+        return (
+            <SidebarLayout route={route} title={title}>
+                <Component pageIsReady={ pageIsReady } />
+            </SidebarLayout>
+        )
+    }
+
     function pageContent(route='/') {
-        const pageIsReady = (() => { 
-            setTimeout(() => {
-                setPageIsLoading(false);
-            }, 1000)
-        });
         
         route = route.toLowerCase();
 
@@ -39,54 +55,26 @@ function Pages() {
 
         switch (route) {
             case '/signup':
-                return (
-                    <LogoLayout>
-                        <Signup pageIsReady={ pageIsReady } />
-                    </LogoLayout>
-                )
+                return LogoPage(Signup);
 
             case '/login':
-                return (
-                    <LogoLayout>
-                        <Login pageIsReady={ pageIsReady } />
-                    </LogoLayout>
-                )
+                return LogoPage(Login);
 
             case '/':
             case '/overview':
-                return (
-                    <SidebarLayout route={route} title="Overview">
-                        <Overview  pageIsReady={ pageIsReady } />
-                    </SidebarLayout>
-                )
+                return SidebarPage(Overview, route, "Overview");
 
             case '/pots':
-                return (
-                    <SidebarLayout route={route} title="Pots" >
-                        <Pots  pageIsReady={ pageIsReady } />
-                    </SidebarLayout>
-                )
+                return SidebarPage(Pots, route, "Pots");
 
             case '/transactions':
-                return (
-                    <SidebarLayout route={route} title="Transactions" >
-                        <Transactions  pageIsReady={ pageIsReady }/>
-                    </SidebarLayout>
-                )
+                return SidebarPage(Transactions, route, "Transactions");
 
             case '/budgets':
-                return (
-                    <SidebarLayout route={route} title="Budgets" >
-                        <UnderConstruction  pageIsReady={ pageIsReady } />
-                    </SidebarLayout>
-                )
+                return SidebarPage(UnderConstruction, route, "Budgets");
 
             case '/recurring-bills':
-                return (
-                    <SidebarLayout route={route} title="RecurringBills" >
-                        <UnderConstruction pageIsReady={ pageIsReady } />
-                    </SidebarLayout>
-                )
+                return SidebarPage(UnderConstruction, route, "Recurring Bills");
         }
     }
 
@@ -100,11 +88,6 @@ function Pages() {
             <Suspense xfallback={<PageLoader />} >
                 { 
                     pageContent(location)
-                    // new Promise((resolve, reject) => {
-                    //     setTimeout(() => {
-                    //         resolve(pageContent(location))
-                    //     }, 1000)
-                    // })
                 }
             </Suspense>
         </div>

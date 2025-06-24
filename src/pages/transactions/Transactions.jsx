@@ -1,11 +1,11 @@
-import { useState, useEffect, useContext, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './Transactions.css'
 import { DB } from '../../utils/DB';
-import { MediaResolution } from '../../contexts/MediaResolution';
+import { useMediaResolution } from '../../contexts/MediaResolution';
 import CustomInput from '../../components/CustomInput';
 import { CustomSelect, CustomIconSelect } from '../../components/CustomSelect';
 import { CustomButton, CustomIconButton } from '../../components/CustomButton';
-import { AuthContext } from '../../contexts/AuthContext';
+import { useAuthContext } from '../../contexts/AuthContext';
 import TransactionRow from './components/TransactionRow';
 import Pagination from './components/Pagination';
 import AddTransactionModal from './components/AddTransactionModal'
@@ -54,9 +54,9 @@ function Transactions( { pageIsReady }) {
     const [categoryKey, setCategoryKey] = useState(allOption.value);
     const [searchText, setSearchText] = useState('');
     
-    const { isMobile, mediaType } = useContext(MediaResolution);
+    const { isMobile } = useMediaResolution();
 
-    const { getUser } = useContext(AuthContext);
+    const { getUser } = useAuthContext();
 
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
@@ -368,7 +368,7 @@ function Transactions( { pageIsReady }) {
                 <table>
                     <tbody>
                         {
-                            viewTransactions.map(transaction => <TransactionRow key={transaction.id} data={transaction} mediaType={mediaType} />)
+                            viewTransactions.map(transaction => <TransactionRow key={transaction.id} data={transaction} />)
                         }
                     </tbody>
                 </table>
@@ -378,7 +378,6 @@ function Transactions( { pageIsReady }) {
                 currentPage={ currentPage } 
                 totalPages={ totalPages } 
                 onClick={ setCurrentPage }
-                mediaType={ mediaType }
             />
         </div>
     )

@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import './Pagination.css'
+import { useMediaResolution } from '../../../contexts/MediaResolution';
 
-function Pagination({ currentPage, totalPages, onClick, mediaType }) {
+function Pagination({ currentPage, totalPages, onClick }) {
+    const { mediaType } = useMediaResolution();
     const numbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
     function btnClick(n) {
@@ -15,10 +17,7 @@ function Pagination({ currentPage, totalPages, onClick, mediaType }) {
                 onClick = { () => { btnClick(Math.max(currentPage - 1, 1)); } }
             >
                 <i className={`fa fa-arrow-left`}></i>
-                {
-                    (mediaType !== 'mobile') &&
-                    <div>Prev</div>
-                }
+                <div className={`${mediaType}`}>Prev</div>
             </div>
             <div className='numbers'>
                 {
@@ -37,10 +36,7 @@ function Pagination({ currentPage, totalPages, onClick, mediaType }) {
                 className={`btn side ${ currentPage === totalPages ? 'disable' : ''}`}
                 onClick = { () => { btnClick( Math.min(currentPage + 1, totalPages)); } }
             >
-                {
-                    (mediaType !== 'mobile') &&
-                    <div>Next</div>
-                }
+                <div className={`${mediaType}`}>Next</div>
                 <i className={`fa fa-arrow-right`}></i>
             </div>
         </div>

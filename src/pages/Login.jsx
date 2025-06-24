@@ -1,11 +1,11 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, Link } from 'wouter'
 
+import './Login.css'
 import CustomInput from '../components/CustomInput';
 import { CustomButton } from '../components/CustomButton';
-import './Login.css'
 import { DB } from '../utils/DB';
-import { AuthContext } from '../contexts/AuthContext';
+import { useAuthContext } from '../contexts/AuthContext';
 import { AUTH_COOKIE_NAME, REFRESH_COOKIE_NAME, createCookie } from '../utils/cookies.jsx'
 import Loader from '../components/Loader.jsx';
 
@@ -15,7 +15,7 @@ function Login( { pageIsReady } ) {
     const [, navigate] = useLocation();
     const [form, setForm] = useState({email:"", password:""});
     const [errMsg, setErrMsg] = useState(emptyMsg);
-    const authContext = useContext(AuthContext)
+    const authContext = useAuthContext();
     const [displayLoader, setDisplayLoader] = useState(false);
 
     // ========================== LOADER ======================================

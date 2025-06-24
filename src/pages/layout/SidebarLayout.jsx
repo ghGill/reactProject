@@ -1,13 +1,12 @@
 import './SidebarLayout.css'
 import Sidebar from '../../components/Sidebar'
-import { MediaResolution } from '../../contexts/MediaResolution'
-import { useContext } from 'react'
+import { useMediaResolution } from '../../contexts/MediaResolution'
 
 function SidebarLayout({ children, route, title }) {
-    const { isDesktop, mediaType } = useContext(MediaResolution);
+    const { isDesktop, mediaType } = useMediaResolution();
 
     return (
-        <div className={`page ${isDesktop ? '' : 'portrait'}`}>
+        <div className={`page ${mediaType}`}>
             <div className={`sidebar-area ${mediaType}`}>
                 <Sidebar route={route} />
             </div>

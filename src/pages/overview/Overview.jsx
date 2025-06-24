@@ -1,13 +1,13 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import './Overview.css'
 import chart from '../../assets/budgets-chart.png'
 import {Link} from 'wouter'
 import { DB } from '../../utils/DB'
-import { MediaResolution } from '../../contexts/MediaResolution'
+import { useMediaResolution } from '../../contexts/MediaResolution'
 
 function Overview({ pageIsReady }) {
     const [users, setUsers] = useState([]);
-    const { isDesktop, isMobile } = useContext(MediaResolution);
+    const { mediaType } = useMediaResolution();
 
     async function getOverviewData() {
         let transactionsTable = await DB.getOverviewData();
@@ -28,7 +28,7 @@ function Overview({ pageIsReady }) {
 
     function Card({ active, title, amount }) {
         return (
-            <div className={`card ${active === "true" ? "active" : ""} ${isMobile ? 'mobile' : ''}`}>
+            <div className={`card ${active === "true" ? "active" : ""} ${mediaType}`}>
                 <div>{title}</div>
                 <div className='amount'>{amount}</div>
             </div>
@@ -107,14 +107,14 @@ function Overview({ pageIsReady }) {
     return (
         <>
             <div className='overview-page'>
-                <div className={`top-cards ${isMobile ? 'mobile' : ''}`}>
+                <div className={`top-cards ${mediaType}`}>
                     <Card active="true" title="Current Balance" amount="$4,836.60" />
                     <Card active="false"  title="Income" amount="$3,814.25"/>
                     <Card active = "false"  title="Expenses" amount="$1,700.50" />
                 </div>
 
-                <div className={`content ${!isDesktop ? 'portrait' : ''}`}>
-                    <div className={`left ${!isDesktop ? 'portrait' : ''}`}>
+                <div className={`content ${mediaType}`}>
+                    <div className={`left ${mediaType}`}>
                         <OverviewCard id='pots' title='Pots' linkText='See Details' route='/pots' >
                             <div className='data'>
                                 <div className="total-saved">

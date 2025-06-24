@@ -7,6 +7,11 @@
 .logo-area {
     width: 30%;
     height: 100%;
+    display: none;
+}
+
+.logo-area.desktop {
+    display: block;
 }
 
 .form-area {

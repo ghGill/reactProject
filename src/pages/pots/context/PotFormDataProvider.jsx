@@ -1,6 +1,6 @@
-import { useState, createContext } from "react";
+import { useState, createContext, useContext } from "react";
 
-export const PotFormDataContext = createContext(null);
+const PotFormDataContext = createContext(null);
 
 const emptyPotFormData = {
     "id":0,
@@ -46,4 +46,4 @@ export function PotFormDataProvider({ children }) {
     )
 }
 
-export default PotFormDataProvider;
+export const usePotFormDataContext = () => useContext(PotFormDataContext);

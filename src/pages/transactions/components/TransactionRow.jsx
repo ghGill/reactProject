@@ -1,10 +1,13 @@
 import './TransactionRow.css'
 import { DB } from '../../../utils/DB';
+import { useMediaResolution } from '../../../contexts/MediaResolution';
 
-function TableRow({ data, mediaType }) {
+function TableRow({ data }) {
+    const { isMobile } = useMediaResolution();
+
     let amount = `${data.amount > 0 ? '+' : '-'}$${parseFloat(Math.abs(data.amount)).toFixed(2)}`;
 
-    return (mediaType === 'mobile') ?
+    return isMobile ?
     (
         <tr>
             <td>
@@ -13,7 +16,7 @@ function TableRow({ data, mediaType }) {
                     <tr>
                         <td>
                             <div className='image-name-container'>
-                                <img src={DB.imageUrl(data.image)} alt="" className={mediaType} />
+                                <img src={DB.imageUrl(data.image)} alt="" />
                                 <b><p>{data.name}</p></b>
                             </div>
                         </td>
@@ -32,7 +35,7 @@ function TableRow({ data, mediaType }) {
         <tr>
             <td>
                 <div className='image-name-container'>
-                    <img src={DB.imageUrl(data.image)} alt="" className={mediaType} />
+                    <img src={DB.imageUrl(data.image)} alt="" />
                     <b><p>{data.name}</p></b>
                 </div>
             </td>

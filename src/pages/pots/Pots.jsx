@@ -1,11 +1,11 @@
-import { useState, useEffect, useContext, createContext } from 'react';
+import { useState, useEffect, createContext, useContext } from 'react';
 import './Pots.css'
 import { DB } from '../../utils/DB';
-import { MediaResolution } from '../../contexts/MediaResolution';
+import { useMediaResolution } from '../../contexts/MediaResolution';
 import { CustomButton } from '../../components/CustomButton';
 import { CustomIconSelect } from '../../components/CustomSelect'
 import AddPotModal from './components/AddPotModal';
-import PotFormDataProvider, { PotFormDataContext } from './context/PotFormDataProvider';
+import { PotFormDataProvider, usePotFormDataContext } from './context/PotFormDataProvider';
 import ConfirmModal from '../../components/ConfirmModal';
 import PotTransactionModal from './components/PotTransactionModal';
 import Loader from '../../components/Loader';
@@ -15,7 +15,7 @@ const usePotCardContext = () => useContext(PotCardContext)
 
 function PotCardHeader() {
     const { index, data, pots, setPots, colors, showLoader, hideLoader } = usePotCardContext();
-    const { editPotData } = useContext(PotFormDataContext);
+    const { editPotData } = usePotFormDataContext();
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const [openEditModal, setOpenEditModal] = useState(false);
 
@@ -165,7 +165,7 @@ export function PotCardProgress() {
 }
 
 function PotCardFooter() {
-    const { isMobile, mediaType } = useContext(MediaResolution);
+    const { mediaType } = useMediaResolution();
     const [openTransactionModal, setOpenTransactionModal] = useState(false);
     const [transactionType, setTransactionType] = useState('');
     const [errMsg, setErrMsg] = useState('');
@@ -173,9 +173,6 @@ function PotCardFooter() {
     const [modalSubTitle, setModalSubTitle] = useState('');
     const [modalOperationTitle, setModalOperationTitle] = useState('');
     const { index, data, pots, setPots, showLoader, hideLoader } = usePotCardContext();
-
-
-    const buttonStyle = {"padding": isMobile ? null : "16px"};
 
     function btnTransactionClick(event) {
         const op = event.target.value;
@@ -231,6 +228,8 @@ function PotCardFooter() {
         hideLoader();
     }
 
+    const buttonStyle = {"padding": "16px"};
+
     return (
         <>
             {
@@ -279,7 +278,7 @@ function PotCardFooter() {
 }
 
 function PotCard( { index, data, pots, setPots, colors, showLoader, hideLoader } ) {
-    const { mediaType } = useContext(MediaResolution);
+    const { mediaType } = useMediaResolution();
 
     return (
         <div className={`pots-card ${ mediaType }`}>
@@ -295,7 +294,7 @@ function PotCard( { index, data, pots, setPots, colors, showLoader, hideLoader }
 }
 
 function PageHeader( { pots, setPots, colors, showLoader, hideLoader }) {
-    const { resetFormData, getFormData } = useContext(PotFormDataContext);
+    const { resetFormData, getFormData } = usePotFormDataContext();
     const [openAddModal, setOpenAddModal] = useState(false);
 
     async function savePot() {

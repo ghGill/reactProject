@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 import { useMediaQuery } from 'react-responsive';
 
 export const MediaResolution = createContext(null);
@@ -20,3 +20,5 @@ export function MediaResolutionProvider({ children }) {
         </MediaResolution.Provider>
     )
 }
+
+export const useMediaResolution = () => useContext(MediaResolution);

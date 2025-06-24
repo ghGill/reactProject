@@ -4,12 +4,8 @@
 }
 
 .image-name-container img {
-    width: 15%;
-    border-radius: 50%;
-}
-
-.image-name-container img.mobile {
     width: 25%;
+    border-radius: 50%;
 }
 
 .image-name-container p {

@@ -1,19 +1,15 @@
 import Logo from "../../components/Logo"
 import './LogoLayout.css'
-import { MediaResolution } from "../../contexts/MediaResolution"
-import { useContext } from "react"
+import { useMediaResolution } from "../../contexts/MediaResolution";
 
 function LogoLayout({ children }) {
-    const { isDesktop } = useContext(MediaResolution);
-    
+    const { mediaType } = useMediaResolution();
+
     return (
         <div className="page">
-            {
-                isDesktop &&
-                <div className="logo-area">
-                    <Logo />
-                </div>
-            }
+            <div className={`logo-area ${mediaType}`}>
+                <Logo />
+            </div>
 
             <div className="form-area">
                 {children}

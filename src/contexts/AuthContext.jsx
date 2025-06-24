@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 import { AUTH_COOKIE_NAME, REFRESH_COOKIE_NAME, deleteCookie } from "../utils/cookies";
 import { DB } from "../utils/DB";
 import { useDispatch, useSelector } from "react-redux";
@@ -47,3 +47,5 @@ export function AuthContextProvider({ children }) {
         </AuthContext.Provider>
     )
 }
+
+export const useAuthContext = () => useContext(AuthContext);
